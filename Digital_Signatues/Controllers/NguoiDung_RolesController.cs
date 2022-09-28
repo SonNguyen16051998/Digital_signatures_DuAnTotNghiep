@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewModel;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -22,19 +23,19 @@ namespace Digital_Signatues.Controllers
         /// <param name="nguoiDung_Roles">truyền về mã người dùng và mã role</param>
         /// <returns></returns>
         [HttpPost(),ActionName("rolenguoidung")]
-        public async Task<IActionResult> UpdateOrAddNguoiDung_RoleAsync(List<NguoiDung_Role> nguoiDung_Roles)
+        public async Task<IActionResult> UpdateOrAddNguoiDung_RoleAsync(PostNguoiDung_Role nguoiDung_Roles)
         {
             if(ModelState.IsValid)
             {
-                if (await _nguoiDung_Role.AddOrUpdateNguoiDung_RoleAsync(nguoiDung_Roles))
+                if (await _nguoiDung_Role.DeleteAllRoleNguoiDung_RoleAsync(nguoiDung_Roles.Id_NguoiDung))
                 {
-                    if(await _nguoiDung_Role.DeleteAllRoleNotHaveNguoiDung_RoleAsync(nguoiDung_Roles))
+                    if(await _nguoiDung_Role.AddOrUpdateNguoiDung_RoleAsync(nguoiDung_Roles))
                     {
                         return Ok(new
                         {
                             retCode = 1,
                             retText = "Cập nhật role cho người dùng thành công",
-                            data = await _nguoiDung_Role.GetNguoiDung_RolesAsync(nguoiDung_Roles[0].Ma_NguoiDung)
+                            data = await _nguoiDung_Role.GetNguoiDung_RolesAsync(nguoiDung_Roles.Id_NguoiDung)
                         });
                     }
                 }

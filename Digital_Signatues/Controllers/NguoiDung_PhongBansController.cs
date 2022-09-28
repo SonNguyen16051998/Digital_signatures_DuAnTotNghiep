@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewModel;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -22,19 +23,19 @@ namespace Digital_Signatues.Controllers
         /// <param name="NguoiDung_PhongBans">truyền về đầy đủ dữ liệu object nguoidung_phongban</param>
         /// <returns></returns>
         [HttpPost(), ActionName("nguoidungphongban")]
-        public async Task<IActionResult> UpdateOrAddNguoiDung_PhongBanAsync(List<NguoiDung_PhongBan> NguoiDung_PhongBans)
+        public async Task<IActionResult> UpdateOrAddNguoiDung_PhongBanAsync(PostNguoiDung_PhongBan NguoiDung_PhongBans)
         {
             if (ModelState.IsValid)
             {
-                if (await _nguoiDung_PhongBan.AddOrUpdateNguoiDung_PhongBanAsync(NguoiDung_PhongBans))
+                if (await _nguoiDung_PhongBan.DeleteAlNothavelNguoiDung_PhongBanAsync(NguoiDung_PhongBans.Id_NguoiDung))
                 {
-                    if (await _nguoiDung_PhongBan.DeleteAlNothavelNguoiDung_PhongBanAsync(NguoiDung_PhongBans))
+                    if (await _nguoiDung_PhongBan.AddOrUpdateNguoiDung_PhongBanAsync(NguoiDung_PhongBans))
                     {
                         return Ok(new
                         {
                             retCode = 1,
                             retText = "Cập nhật phòng ban cho người dùng thành công",
-                            data = await _nguoiDung_PhongBan.GetNguoiDung_PhongBansAsync(NguoiDung_PhongBans[0].Ma_NguoiDung)
+                            data = await _nguoiDung_PhongBan.GetNguoiDung_PhongBansAsync(NguoiDung_PhongBans.Id_NguoiDung)
                         });
                     }
                 }

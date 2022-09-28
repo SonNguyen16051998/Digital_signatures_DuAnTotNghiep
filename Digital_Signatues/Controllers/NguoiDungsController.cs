@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Digital_Signatues.Models.ViewPost;
 
 namespace Digital_Signatues.Controllers
 {
@@ -43,12 +44,24 @@ namespace Digital_Signatues.Controllers
         /// <param name="nguoiDung"></param>
         /// <returns></returns>
         [HttpPost,ActionName("register")]
-        public async Task<IActionResult> PostNguoiDungAsync([FromBody]NguoiDung nguoiDung)
+        public async Task<IActionResult> PostNguoiDungAsync([FromBody]PostNguoiDung nguoiDung)
         {
-            nguoiDung.Block = false;
-            nguoiDung.IsDeleted = false;
+            
             if(ModelState.IsValid)
             {
+                NguoiDung addNguoiDung = new NguoiDung()
+                {
+                    Block = false,
+                    IsDeleted = false,
+                    Email = nguoiDung.Email,
+                    HoTen=nguoiDung.HoTen,
+                    Avatar=nguoiDung.Avatar,
+                    DiaChi=nguoiDung.DiaChi,
+                    PassWord=nguoiDung.PassWord,
+                    Sdt=nguoiDung.Sdt,
+                    GioiTinh=nguoiDung.GioiTinh,
+                    Ma_ChucDanh=nguoiDung.Ma_ChucDanh
+                };
                 if(await _nguoiDung.isEmail(nguoiDung.Email))
                 {
                     return Ok(new
@@ -60,7 +73,7 @@ namespace Digital_Signatues.Controllers
                 }
                 else
                 {
-                    int id_NguoiDung = await _nguoiDung.AddNguoiDungAsync(nguoiDung);
+                    int id_NguoiDung = await _nguoiDung.AddNguoiDungAsync(addNguoiDung);
                     if (id_NguoiDung > 0)
                     {
                         return Ok(new

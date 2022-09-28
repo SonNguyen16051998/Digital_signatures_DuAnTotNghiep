@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewModel;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -20,19 +21,19 @@ namespace Digital_Signatues.Controllers
         /// <param name="Role_Quyens">truyền về danh sách object role_quyen</param>
         /// <returns></returns>
         [HttpPost(), ActionName("rolequyen")]
-        public async Task<IActionResult> UpdateOrAddRole_QuyenAsync(List<Role_Quyen> Role_Quyens)
+        public async Task<IActionResult> UpdateOrAddRole_QuyenAsync(PostRole_Quyen Role_Quyens)
         {
             if (ModelState.IsValid)
             {
-                if (await _role_Quyen.AddOrUpdateRole_QuyenAsync(Role_Quyens))
+                if (await _role_Quyen.DeleteAlNothavelRole_QuyenAsync(Role_Quyens.Id_Role))
                 {
-                    if (await _role_Quyen.DeleteAlNothavelRole_QuyenAsync(Role_Quyens))
+                    if (await _role_Quyen.AddOrUpdateRole_QuyenAsync(Role_Quyens))
                     {
                         return Ok(new
                         {
                             retCode = 1,
                             retText = "Cập nhật quyền cho role thành công",
-                            data = await _role_Quyen.GetRole_QuyensAsync(Role_Quyens[0].Ma_Role)
+                            data = await _role_Quyen.GetRole_QuyensAsync(Role_Quyens.Id_Role)
                         });
                     }
                 }

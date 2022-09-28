@@ -2,9 +2,9 @@
 
 namespace Digital_Signatues.Models.ViewModel
 {
-    public class PostNguoiDung_Role
+    public class PostNguoiDung_PhongBan
     {
         public int Id_NguoiDung { get; set; }
-        public List<ViewRole> Roles { get; set; }
+        public List<ViewPhongBan> PhongBans { get; set; }
     }
 }

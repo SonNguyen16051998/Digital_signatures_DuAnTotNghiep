@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPost;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -40,12 +41,16 @@ namespace Digital_Signatues.Controllers
         /// <param name="Role">tuyền về object role có tên và isdeleted=false</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostRoleAsync([FromBody] Role Role)
+        public async Task<IActionResult> PostRoleAsync([FromBody] PostRole Role)
         {
-            Role.IsDeleted = false;
             if (ModelState.IsValid)
             {
-                int id_Role = await _role.AddRoleAsync(Role);
+                Role addRole = new Role()
+                {
+                    IsDeleted = false,
+                    Ten_Role = Role.Ten_Role
+                };
+                int id_Role = await _role.AddRoleAsync(addRole);
                 if ( id_Role> 0)
                 {
                     return Ok(new

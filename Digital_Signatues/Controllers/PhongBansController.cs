@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using Digital_Signatues.Models.ViewPost;
 
 namespace Digital_Signatues.Controllers
 {
@@ -43,14 +44,18 @@ namespace Digital_Signatues.Controllers
         /// <param name="phongBan">truyền về object phongban.trường isdeleted,order và ngaytao để null</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostPhongBanAsync([FromBody]PhongBan phongBan)
+        public async Task<IActionResult> PostPhongBanAsync([FromBody]PostPhongBan phongBan)
         {
-            phongBan.IsDeleted = false;
-            phongBan.Order = 0;
-            phongBan.NgayTao = DateTime.Now;
             if(ModelState.IsValid)
             {
-                int id_Phongban = await _phongBan.AddPhongBanAsync(phongBan);
+                PhongBan addPhongBan = new PhongBan()
+                {
+                    NgayTao = DateTime.Now,
+                    Order = 0,
+                    IsDeleted = false,
+                    Ten_PhongBan = phongBan.Ten_PhongBan
+                };
+                int id_Phongban = await _phongBan.AddPhongBanAsync(addPhongBan);
                 if (id_Phongban>0)
                 {
                     return Ok(new

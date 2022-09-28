@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ namespace Digital_Signatues.Services
 {
     public interface INguoiDung_PhongBan
     {
-        Task<bool> AddOrUpdateNguoiDung_PhongBanAsync(List<NguoiDung_PhongBan> nguoiDung_PhongBans);
-        Task<bool> DeleteAlNothavelNguoiDung_PhongBanAsync(List<NguoiDung_PhongBan> nguoiDung_PhongBans);
+        Task<bool> AddOrUpdateNguoiDung_PhongBanAsync(PostNguoiDung_PhongBan nguoiDung_PhongBans);
+        Task<bool> DeleteAlNothavelNguoiDung_PhongBanAsync(int id_nguoiDung);
         Task<List<NguoiDung_PhongBan>> GetNguoiDung_PhongBansAsync(int id_nguoiDung);//Hiển thị toàn bộ phòng ban đã có của người dùng
         Task<List<PhongBan>> GetNguoiDung_PhongBanNotHaveAsync(int id_nguoiDung);//lấy các phòng ban mà người dùng chưa có
     }
@@ -21,24 +22,21 @@ namespace Digital_Signatues.Services
             _context = context; 
         }
 
-        public async Task<bool> AddOrUpdateNguoiDung_PhongBanAsync(List<NguoiDung_PhongBan> nguoiDung_PhongBans)
+        public async Task<bool> AddOrUpdateNguoiDung_PhongBanAsync(PostNguoiDung_PhongBan nguoiDung_PhongBans)
         {
             bool ret = false;
             try
             {
-                foreach (var item in nguoiDung_PhongBans)
+                foreach (var item in nguoiDung_PhongBans.PhongBans)
                 {
-                    NguoiDung_PhongBan nguoiDung_phongBan = new NguoiDung_PhongBan();
-                    nguoiDung_phongBan = await _context.NguoiDung_PhongBans.Where(x => x.Ma_NguoiDung == item.Ma_NguoiDung
-                                      && x.Ma_PhongBan == item.Ma_PhongBan).FirstOrDefaultAsync();//
-                    if (nguoiDung_phongBan != null)//kiểm tra người dùng đã nằm trong phòng ban này chưa
+                    var name = await _context.NguoiDungs.Where(x => x.Ma_NguoiDung == nguoiDung_PhongBans.Id_NguoiDung).FirstOrDefaultAsync();
+                    var nguoidung = new NguoiDung_PhongBan()
                     {
-                        continue;
-                    }
-                    else//chưa thì thêm vào
-                    {
-                        await _context.NguoiDung_PhongBans.AddAsync(item);
-                    }
+                        Ma_NguoiDung = nguoiDung_PhongBans.Id_NguoiDung,
+                        Ma_PhongBan = item.Id_PhongBan,
+                        Ten_NguoiDung = name.HoTen
+                    };
+                    await _context.NguoiDung_PhongBans.AddAsync(nguoidung);
                 }
                 await _context.SaveChangesAsync();
                 ret = true;
@@ -50,22 +48,20 @@ namespace Digital_Signatues.Services
             return ret;
         }
 
-        public async Task<bool> DeleteAlNothavelNguoiDung_PhongBanAsync(List<NguoiDung_PhongBan> nguoiDung_PhongBans)
+        public async Task<bool> DeleteAlNothavelNguoiDung_PhongBanAsync(int id_nguoiDung)
         {
             bool ret = false;
             try
             {
-                List<NguoiDung_PhongBan> nguoiDung_phongBannothave = new List<NguoiDung_PhongBan>();
-                List<int> id_NguoiDung_phongban = (from p in nguoiDung_PhongBans
-                                                   select p.Ma_PhongBan).ToList();
-                //lấy các phòng ban mà người dùng bỏ đi và xóa nó
-                nguoiDung_phongBannothave = await _context.NguoiDung_PhongBans.Where(x => !id_NguoiDung_phongban.Contains(x.Ma_PhongBan)
-                                          && x.Ma_NguoiDung == nguoiDung_PhongBans[0].Ma_NguoiDung).ToListAsync();
-                foreach (var item in nguoiDung_PhongBans)
+                var nguoidung = await _context.NguoiDung_PhongBans.Where(x => x.Ma_NguoiDung == id_nguoiDung).ToListAsync();
+                if(nguoidung.Count > 0)
                 {
-                    _context.NguoiDung_PhongBans.Remove(item);
+                    foreach (var item in nguoidung)
+                    {
+                        _context.NguoiDung_PhongBans.Remove(item);
+                    }
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
                 ret = true;
             }
             catch

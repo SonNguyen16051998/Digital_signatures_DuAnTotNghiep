@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ namespace Digital_Signatues.Services
 {
     public interface INguoiDung_Role
     {
-        Task<bool> AddOrUpdateNguoiDung_RoleAsync(List<NguoiDung_Role> nguoiDung_Roles);
-        Task<bool> DeleteAllRoleNotHaveNguoiDung_RoleAsync(List<NguoiDung_Role> nguoiDung_Roles);
+        Task<bool> AddOrUpdateNguoiDung_RoleAsync(PostNguoiDung_Role nguoiDung_Roles);
+        Task<bool> DeleteAllRoleNguoiDung_RoleAsync(int id_nguoiDung);
         Task<List<NguoiDung_Role>> GetNguoiDung_RolesAsync(int id_nguoiDung);//Hiển thị toàn bộ role đã chọn của người dùng
         Task<List<Role>> GetRoleNguoiDungNotHaveAsync(int id_nguoiDung);//lấy các role mà người dùng chưa có
         Task<List<NguoiDung_Quyen>> GetNguoiDung_QuyensAsync(int id_nguoiDung);
@@ -21,54 +22,37 @@ namespace Digital_Signatues.Services
         {
             _context = context;
         }
-        public async Task<bool> AddOrUpdateNguoiDung_RoleAsync(List<NguoiDung_Role> nguoiDung_Roles)
+        public async Task<bool> AddOrUpdateNguoiDung_RoleAsync(PostNguoiDung_Role nguoiDung_Roles)
         {
             bool ret = false;
             try
             {
-                foreach(var item in nguoiDung_Roles)
+                foreach(var item in nguoiDung_Roles.Roles)
                 {
-                    NguoiDung_Role nguoiDung_Role = new NguoiDung_Role();
-                    nguoiDung_Role = await _context.NguoiDung_Roles.Where(x => x.Ma_NguoiDung == item.Ma_NguoiDung
-                                      && x.Ma_Role == item.Ma_Role).FirstOrDefaultAsync();//
-                    if(nguoiDung_Role != null)//kiểm tra người dùng đã có role này chưa
+                    var nguoidung_role = new NguoiDung_Role()
                     {
-                        continue;
-                    }
-                    else//chưa có role sẽ thêm role vào cho người dùng
+                        Ma_NguoiDung = nguoiDung_Roles.Id_NguoiDung,
+                        Ma_Role = item.id_role
+                    };
+                    await _context.NguoiDung_Roles.AddAsync(nguoidung_role);
+                    var quyen = await _context.Role_Quyens.Where(x => x.Ma_Role == item.id_role).ToListAsync();
+                    foreach(var item1 in quyen)
                     {
-                        await _context.NguoiDung_Roles.AddAsync(item);
-                        List<Role_Quyen> role_quyens = new List<Role_Quyen>();
-                        //lấy toàn bộ quyền của role đang muốn thêm cho người dùng
-                        role_quyens = await _context.Role_Quyens.Where(x => x.Ma_Role == item.Ma_Role).ToListAsync();
-                        foreach (var role_quyen in role_quyens)
+                        var nguoidung_quyen = await _context.NguoiDung_Quyens
+                            .Where(x => x.Ma_NguoiDung == nguoiDung_Roles.Id_NguoiDung
+                                    && x.Ma_Quyen == item1.Ma_Quyen).FirstOrDefaultAsync();
+                        if(nguoidung_quyen!=null)//kiem tra quyen nay nguoi dung da co chua
                         {
-/*                            NguoiDung_Quyen nguoidung_Quyen=new NguoiDung_Quyen();
-                            nguoidung_Quyen=await _context.NguoiDung_Quyens.Where(x=>x.Ma_NguoiDung==item.Ma_NguoiDung
-                                            && x.Ma_Quyen==role_quyen.Ma_Quyen).FirstOrDefaultAsync();
-                            if(nguoidung_Quyen!=null)//kiểm tra quyền này người dùng đã có chưa
+                            continue;
+                        }
+                        else//chua co thi them moi
+                        {
+                            var postnguoidung_quyen = new NguoiDung_Quyen()
                             {
-                                continue;
-                            }*/
-                        /*    else//chưa có thì thêm vào cho người dùng
-                            {*/
-                                NguoiDung_Quyen nd_quyen = new NguoiDung_Quyen();
-                                /*nd_quyen = await _context.NguoiDung_Quyens.Where(x => x.Ma_NguoiDung == item.Ma_NguoiDung
-                                              && x.Ma_Quyen == role_quyen.Ma_Quyen).FirstOrDefaultAsync();
-                                if (nd_quyen != null)
-                                {
-                                    continue;
-                                }
-                                else
-                                {*/
-                                    NguoiDung_Quyen nguoiDung_Quyen = new NguoiDung_Quyen()
-                                    {
-                                        Ma_NguoiDung = item.Ma_NguoiDung,
-                                        Ma_Quyen = role_quyen.Ma_Quyen
-                                    };
-                                    await _context.NguoiDung_Quyens.AddAsync(nguoiDung_Quyen);
-                               /* }*/
-                            /*}*/
+                                Ma_NguoiDung=nguoiDung_Roles.Id_NguoiDung,
+                                Ma_Quyen=item1.Ma_Quyen
+                            };
+                            await _context.NguoiDung_Quyens.AddAsync(postnguoidung_quyen);
                         }
                     }
                 }
@@ -81,22 +65,28 @@ namespace Digital_Signatues.Services
             }
             return ret;
         }
-        public async Task<bool> DeleteAllRoleNotHaveNguoiDung_RoleAsync(List<NguoiDung_Role> nguoiDung_Roles)
+        public async Task<bool> DeleteAllRoleNguoiDung_RoleAsync(int id_Nguoidung)
         {
             bool ret = false;
             try
             {
-                List<NguoiDung_Role> nguoiDung_Rolenothave = new List<NguoiDung_Role>();
-                List<int> id_NguoiDung_Role = (from p in nguoiDung_Roles
-                                               select p.Ma_Role).ToList();
-                //lấy các role mà người dùng bỏ đi và xóa nó
-                nguoiDung_Rolenothave = await _context.NguoiDung_Roles.Where(x => !id_NguoiDung_Role.Contains(x.Ma_Role)
-                                          && x.Ma_NguoiDung == nguoiDung_Roles[0].Ma_NguoiDung).ToListAsync();
-                foreach (var item in nguoiDung_Rolenothave)
+                var nguoidung=await _context.NguoiDung_Roles.Where(x=>x.Ma_NguoiDung==id_Nguoidung).ToListAsync();
+                if(nguoidung!=null)
                 {
-                    _context.NguoiDung_Roles.Remove(item);
+                    foreach (var item in nguoidung)
+                    {
+                        _context.NguoiDung_Roles.Remove(item);
+                    }
+                    var nguoidung_quyen = await _context.NguoiDung_Quyens.Where(x => x.Ma_NguoiDung == id_Nguoidung).ToListAsync();
+                    if (nguoidung_quyen != null)
+                    {
+                        foreach (var item1 in nguoidung_quyen)
+                        {
+                            _context.NguoiDung_Quyens.Remove(item1);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
                 ret = true;
             }
             catch
@@ -108,8 +98,7 @@ namespace Digital_Signatues.Services
 
         public async Task<List<NguoiDung_Role>> GetNguoiDung_RolesAsync(int id_nguoiDung)
         {
-            List<NguoiDung_Role> nguoiDung_Roles=new List<NguoiDung_Role>();
-            nguoiDung_Roles=await _context.NguoiDung_Roles.Where(x=>x.Ma_NguoiDung==id_nguoiDung)
+            var nguoiDung_Roles=await _context.NguoiDung_Roles.Where(x=>x.Ma_NguoiDung==id_nguoiDung)
                             .Include(x=>x.Role).ToListAsync();
             return nguoiDung_Roles;
         }

@@ -60,7 +60,6 @@ namespace Digital_Signatues.Services
                 _context.Roles.Update(role);
                 await _context.SaveChangesAsync();
                 ret = true;
-
             }
             catch { }
             return ret;

@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPost;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -40,12 +41,16 @@ namespace Digital_Signatues.Controllers
         /// <param name="quyen">truyền về object quyen trả về tên quyền và isdeleted=false</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostQuyenAsync([FromBody] Quyen quyen)
+        public async Task<IActionResult> PostQuyenAsync([FromBody] PostQuyen quyen)
         {
-            quyen.Isdeleted = false;
             if (ModelState.IsValid)
             {
-                int id_Quyen = await _quyen.AddQuyenAsync(quyen);
+                Quyen addQuyen = new Quyen()
+                {
+                    Isdeleted = false,
+                    Ten_Quyen = quyen.Ten_Quyen,
+                };
+                int id_Quyen = await _quyen.AddQuyenAsync(addQuyen);
                 if ( id_Quyen> 0)
                 {
                     return Ok(new

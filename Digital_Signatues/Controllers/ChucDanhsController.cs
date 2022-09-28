@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPost;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -40,13 +41,17 @@ namespace Digital_Signatues.Controllers
         /// <param name="chucDanh">trong object chức danh chỉ cần truyền về tên chức danh còn lại để null</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostChucDanhAsync([FromBody] ChucDanh chucDanh)
+        public async Task<IActionResult> PostChucDanhAsync([FromBody] PostChucDanh chucDanh)
         {// thêm chức danh chỉ cần gửi tên chức danh
-            chucDanh.IsDeleted = false;
-            chucDanh.Oder = 0;
             if (ModelState.IsValid)
             {
-                int id_ChucDanh = await _chucDanh.AddChucDanhAsync(chucDanh);
+                ChucDanh addChucDanh = new ChucDanh()
+                {
+                    IsDeleted = false,
+                    Oder = 0,
+                    Ten_ChucDanh = chucDanh.Ten_ChucDanh
+                };
+                int id_ChucDanh = await _chucDanh.AddChucDanhAsync(addChucDanh);
                 if (id_ChucDanh> 0)
                 {
                     return Ok(new
