@@ -19,7 +19,6 @@ namespace Digital_Signatues.Models
         public int Ma_KySoFile { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string TenFile { get; set; }
-        public int Type { get; set; }
         public KySo KySo { get; set; }
         public NguoiDung NguoiDung { get; set;}
         public KySoFile KySoFile { get; set; }

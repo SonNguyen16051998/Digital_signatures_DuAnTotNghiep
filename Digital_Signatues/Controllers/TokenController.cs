@@ -63,7 +63,7 @@ namespace Digital_Signatues.Controllers
                     return Ok(new
                     {
                         retCode = 0,
-                        retText = "Dữ liệu không hợp lệ",
+                        retText = "Tài khoản hoặc mật khẩu không chính xác",
                         data = ""
                     });
                 }
@@ -71,7 +71,7 @@ namespace Digital_Signatues.Controllers
             return Ok(new
             {
                 retCode = 0,
-                retText = "Tài khoản hoặc mật khẩu không chính xác",
+                retText = "Dữ liệu không hợp lệ",
                 data = ""
             });
         }

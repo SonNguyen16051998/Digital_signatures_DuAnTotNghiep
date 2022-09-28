@@ -14,7 +14,7 @@ namespace Digital_Signatues.Models
         [Column(TypeName = "nvarchar(4000)")]
         public string NoiDung { get; set; }
         [Column(TypeName = "nvarchar(4000)")]
-        public string Json { get; set; }
+        public string Json { get; set; }// lưu toàn bộ chuỗi json gồm user_id,vùng kí, văn bản kí, bước kí,....
         public NguoiDung NguoiDung { get; set; }
     }
 }

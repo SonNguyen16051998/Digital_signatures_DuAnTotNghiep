@@ -25,14 +25,19 @@ namespace Digital_Signatues.Services
         public async Task<List<ChucDanh>> GetChucDanhsAsync()
         {
             List<ChucDanh> chucDanhs = new List<ChucDanh>();
-            chucDanhs = await _context.ChucDanhs.ToListAsync();
+            chucDanhs = await _context.ChucDanhs
+                        .OrderBy(x=>x.Oder)    
+                        .Include(x=>x.NguoiDung)
+                        .ToListAsync();
             return chucDanhs;
         }
 
         public async Task<ChucDanh> GetChucDanhAsync(int id)
         {
             ChucDanh chucDanh = new ChucDanh();
-            chucDanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == id).FirstOrDefaultAsync();
+            chucDanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == id)
+                    .Include(x=>x.NguoiDung)
+                    .FirstOrDefaultAsync();
             return chucDanh;
         }
 

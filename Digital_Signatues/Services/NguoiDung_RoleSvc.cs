@@ -43,32 +43,32 @@ namespace Digital_Signatues.Services
                         role_quyens = await _context.Role_Quyens.Where(x => x.Ma_Role == item.Ma_Role).ToListAsync();
                         foreach (var role_quyen in role_quyens)
                         {
-                            NguoiDung_Quyen nguoidung_Quyen=new NguoiDung_Quyen();
+/*                            NguoiDung_Quyen nguoidung_Quyen=new NguoiDung_Quyen();
                             nguoidung_Quyen=await _context.NguoiDung_Quyens.Where(x=>x.Ma_NguoiDung==item.Ma_NguoiDung
                                             && x.Ma_Quyen==role_quyen.Ma_Quyen).FirstOrDefaultAsync();
                             if(nguoidung_Quyen!=null)//kiểm tra quyền này người dùng đã có chưa
                             {
                                 continue;
-                            }
-                            else//chưa có thì thêm vào cho người dùng
-                            {
+                            }*/
+                        /*    else//chưa có thì thêm vào cho người dùng
+                            {*/
                                 NguoiDung_Quyen nd_quyen = new NguoiDung_Quyen();
-                                nd_quyen = await _context.NguoiDung_Quyens.Where(x => x.Ma_NguoiDung == item.Ma_NguoiDung
+                                /*nd_quyen = await _context.NguoiDung_Quyens.Where(x => x.Ma_NguoiDung == item.Ma_NguoiDung
                                               && x.Ma_Quyen == role_quyen.Ma_Quyen).FirstOrDefaultAsync();
                                 if (nd_quyen != null)
                                 {
                                     continue;
                                 }
                                 else
-                                {
+                                {*/
                                     NguoiDung_Quyen nguoiDung_Quyen = new NguoiDung_Quyen()
                                     {
                                         Ma_NguoiDung = item.Ma_NguoiDung,
                                         Ma_Quyen = role_quyen.Ma_Quyen
                                     };
                                     await _context.NguoiDung_Quyens.AddAsync(nguoiDung_Quyen);
-                                }
-                            }
+                               /* }*/
+                            /*}*/
                         }
                     }
                 }

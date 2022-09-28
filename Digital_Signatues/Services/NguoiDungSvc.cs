@@ -22,6 +22,7 @@ namespace Digital_Signatues.Services
         Task<bool> CreateOrUpdateOTPAsync(OTP oTP);//tạo mã otp hoặc cập nhật mã otp mới cho email đã tồn tại
         Task<bool> ConfirmOTPAsync(string email,string otp);//xác nhận OTP sau khi nhập mã OTP
         Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau);//đổi mật khẩu mới khi chọn chức năng quên mật khẩu
+        Task<bool> DeleteNguoiDungAsync(int id_NguoiDung);
     }
     public class NguoiDungSvc:INguoiDung
     {
@@ -210,6 +211,28 @@ namespace Digital_Signatues.Services
                             .Include(x=>x.NguoiDung_PhongBan)
                             .ToListAsync();
             return nguoiDungs;
+        }
+        public async Task<bool> DeleteNguoiDungAsync(int id_NguoiDung)
+        {
+            bool ret = false;
+            try
+            {
+                List<NguoiDung_PhongBan> nguoiDungs = new List<NguoiDung_PhongBan>();
+                nguoiDungs = await _context.NguoiDung_PhongBans.Where(x => x.Ma_NguoiDung == id_NguoiDung).ToListAsync();
+                foreach (var item in nguoiDungs)//xóa người dùng ở bảng người dùng_phòng ban
+                {
+                    _context.NguoiDung_PhongBans.Remove(item);
+                }
+
+                NguoiDung nguoidung = new NguoiDung();
+                nguoidung = await _context.NguoiDungs.Where(x => x.Ma_NguoiDung == id_NguoiDung).FirstOrDefaultAsync();
+                nguoidung.IsDeleted = true;
+                _context.NguoiDungs.Update(nguoidung);
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
+            return ret;
         }
     }
 }

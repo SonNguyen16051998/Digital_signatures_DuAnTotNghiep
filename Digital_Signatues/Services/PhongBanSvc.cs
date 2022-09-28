@@ -24,7 +24,10 @@ namespace Digital_Signatues.Services
         public async Task<List<PhongBan>> GetPhongBansAsync()
         {
             List<PhongBan> phongBans = new List<PhongBan>();
-            phongBans = await _context.PhongBans.ToListAsync();
+            phongBans = await _context.PhongBans
+                         .OrderBy(x=>x.Order)
+                        .Include(x=>x.NguoiDung_PhongBan)
+                        .ToListAsync();
             return phongBans;
         }
 

@@ -16,7 +16,7 @@ namespace Digital_Signatues.Controllers
             _chucDanh = chucDanh;
         }
         /// <summary>
-        /// hiển thị toàn bộ chức danh
+        /// hiển thị toàn bộ chức danh bao gồm người dùng thuộc chức danh tương ứng
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -25,7 +25,7 @@ namespace Digital_Signatues.Controllers
             return await _chucDanh.GetChucDanhsAsync();
         }
         /// <summary>
-        /// trả về chức danh vừa chọn
+        /// trả về chức danh vừa chọn bao gồm người dùng thuộc chức danh đó
         /// </summary>
         /// <param name="id">mã chức danh</param>
         /// <returns></returns>

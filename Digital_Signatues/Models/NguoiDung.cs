@@ -52,7 +52,7 @@ namespace Digital_Signatues.Models
         public ChucDanh ChucDanh { get;set; }
         public ICollection<NguoiDung_PhongBan> NguoiDung_PhongBan { get; set; }
         public ICollection<NguoiDung_Role> NguoiDung_Role { get; set; }
-        public ICollection<KySo> KySos { get; set; }
+      /*  public ICollection<KySo> KySos { get; set; }
         public ICollection<KySoDeXuat> KySoDeXuats { get; set; }
         public ICollection<KySoFile> KySoFile { get; set;}
         public ICollection<KySoFileDetail> KySoFileDetail { get; set; }
@@ -63,7 +63,8 @@ namespace Digital_Signatues.Models
         public ICollection<KySoThongSo> KySoThongSo_NguoiDung { get; set; }
         public ICollection<KySoThongSo> KySoThongSo_NguoiUpdate { get; set; }
         public ICollection<KySoThongSo> KySoThongSo_NguoiKyThu { get; set; }
-        public ICollection<KySoVungKy> KySoVungKy { get; set; }
+        public ICollection<KySoVungKy> KySoVungKy { get; set; }*/
         public ICollection<NguoiDung_Quyen> NguoiDung_Quyens { get; set; }
+        public ICollection<KySoTest> kySoTests { get; set; }
     }
 }

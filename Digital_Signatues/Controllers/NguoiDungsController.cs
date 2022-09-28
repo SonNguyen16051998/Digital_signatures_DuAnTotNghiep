@@ -42,7 +42,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="nguoiDung"></param>
         /// <returns></returns>
-        [HttpPost,ActionName("nguoidung")]
+        [HttpPost,ActionName("register")]
         public async Task<IActionResult> PostNguoiDungAsync([FromBody]NguoiDung nguoiDung)
         {
             nguoiDung.Block = false;
@@ -258,6 +258,33 @@ namespace Digital_Signatues.Controllers
             {
                 retCode = 0,
                 retText = "Dữ liệu không hợp lệ",
+                data = ""
+            });
+        }
+        /// <summary>
+        /// xóa người dùng đồng thời xóa người dùng ra khỏi bảng người dùng phòng ban
+        /// </summary>
+        /// <param name="id">mã người dùng</param>
+        /// <returns></returns>
+        [HttpPut("{id}"),ActionName("deletenguoidung")]
+        public async Task<IActionResult> DeleteNguoiDungAsync(int id)
+        {
+            if(id>0)
+            {
+                if(await _nguoiDung.DeleteNguoiDungAsync(id))
+                {
+                    return Ok(new
+                    {
+                        retCode = 1,
+                        retText = "Xóa người dùng thành công",
+                        data = await _nguoiDung.GetNguoiDungAsync(id)
+                    });
+                }
+            }
+            return Ok(new
+            {
+                retCode = 0,
+                retText = "Mã người dùng không tồn tại",
                 data = ""
             });
         }

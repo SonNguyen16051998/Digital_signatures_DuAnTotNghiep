@@ -11,8 +11,6 @@ namespace Digital_Signatues.Models
         public int Ma_KySo { get; set; }
         [ForeignKey("NguoiDung")]
         public int Ma_NguoiTao { get; set; }
-        [Column(TypeName ="nvarchar(50)")]
-        public string ThuMuc { get; set; }
         public DateTime ThoiDiem { get; set; }
         [Column(TypeName ="nvarchar(255)")]
         public string Ten_KySo { get; set; }

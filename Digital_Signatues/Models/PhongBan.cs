@@ -18,6 +18,6 @@ namespace Digital_Signatues.Models
         public int Order { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<NguoiDung_PhongBan> NguoiDung_PhongBan { get; set; }
-        public ICollection<KySoQuyTrinh> KySoQuyTrinhs { get; set; }
+       /* public ICollection<KySoQuyTrinh> KySoQuyTrinhs { get; set; }*/
     }
 }
