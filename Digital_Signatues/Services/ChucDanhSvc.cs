@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPut;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace Digital_Signatues.Services
         Task<ChucDanh> GetChucDanhAsync(int id);
         Task<bool> DeleteChucDanhAsync(int id);
         Task<int> AddChucDanhAsync(ChucDanh chucDanh);
-        Task<int> UpdateChucDanhAsync(ChucDanh chucDanh);
+        Task<int> UpdateChucDanhAsync(PutChucDanh putChucDanh);
+        Task<bool> SapXepThuTuAsync(List<PutSapXep> chucDanhs);
     }
     public class ChucDanhSvc:IChucDanh
     {
@@ -26,7 +28,7 @@ namespace Digital_Signatues.Services
         {
             List<ChucDanh> chucDanhs = new List<ChucDanh>();
             chucDanhs = await _context.ChucDanhs
-                        .OrderBy(x=>x.Oder)    
+                        .OrderBy(x=>x.Order)    
                         .Include(x=>x.NguoiDung)
                         .ToListAsync();
             return chucDanhs;
@@ -71,6 +73,15 @@ namespace Digital_Signatues.Services
             int ret = 0;
             try
             {
+                var chucdanh = await _context.ChucDanhs.OrderByDescending(x => x.Order).Take(1).FirstOrDefaultAsync();
+                if(chucdanh==null)
+                {
+                    chucDanh.Order = 1;
+                }
+                else
+                {
+                    chucDanh.Order = chucdanh.Order + 1;
+                }
                 await _context.ChucDanhs.AddAsync(chucDanh);
                 await _context.SaveChangesAsync();
                 ret = chucDanh.Ma_ChucDanh;
@@ -82,19 +93,45 @@ namespace Digital_Signatues.Services
             return ret;
         }
 
-        public async Task<int> UpdateChucDanhAsync(ChucDanh chucDanh)
+        public async Task<int> UpdateChucDanhAsync(PutChucDanh putChucDanh)
         {
             int ret = 0;
             try
             {
-                _context.ChucDanhs.Update(chucDanh);
+                var update=await _context.ChucDanhs.Where(x=>x.Ma_ChucDanh== putChucDanh.Ma_ChucDanh).FirstOrDefaultAsync();
+                update.Ten_ChucDanh = putChucDanh.Ten_ChucDanh;
+                _context.ChucDanhs.Update(update);
                 await _context.SaveChangesAsync();
-                ret = chucDanh.Ma_ChucDanh;
+                ret = update.Ma_ChucDanh;
             }
             catch
             {
                 ret = 0;
             }
+            return ret;
+        }
+        public async Task<bool> SapXepThuTuAsync(List<PutSapXep> chucDanhs)
+        {
+            bool ret = false;
+            try
+            {
+                foreach(var item in chucDanhs)
+                {
+                    ChucDanh chucDanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == item.Id).FirstOrDefaultAsync();
+                    if(chucDanh.Order==item.Order)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        chucDanh.Order = item.Order;
+                        _context.ChucDanhs.Update(chucDanh);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
             return ret;
         }
     }

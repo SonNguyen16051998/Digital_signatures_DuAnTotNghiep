@@ -1,5 +1,6 @@
 ﻿using Digital_Signatues.Models;
 using Digital_Signatues.Models.ViewPost;
+using Digital_Signatues.Models.ViewPut;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -71,14 +72,14 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// cập nhật quyền
         /// </summary>
-        /// <param name="Quyen">truyền đầy đủ dữ liệu tên và isdeleted=false</param>
+        /// <param name="putQuyen">truyền đầy đủ dữ liệu tên và isdeleted=false</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> PutQuyenAsync(Quyen Quyen)
+        public async Task<IActionResult> PutQuyenAsync([FromBody]PutQuyen putQuyen)
         {
             if (ModelState.IsValid)
             {
-                int id_quyen = await _quyen.UpdateQuyenAsync(Quyen);
+                int id_quyen = await _quyen.UpdateQuyenAsync(putQuyen);
                 if ( id_quyen> 0)
                 {
                     return Ok(new
@@ -101,7 +102,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã quyền</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuyenAsync(int id)
         {
             if (await _quyen.DeleteQuyenAsync(id))

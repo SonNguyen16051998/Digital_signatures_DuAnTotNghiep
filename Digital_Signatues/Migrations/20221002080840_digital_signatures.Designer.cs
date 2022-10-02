@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Digital_Signatues.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220928050555_digital_signatures")]
+    [Migration("20221002080840_digital_signatures")]
     partial class digital_signatures
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace Digital_Signatues.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Oder")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<string>("Ten_ChucDanh")

@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPut;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace Digital_Signatues.Services
         Task<PhongBan> GetPhongBanAsync(int id);
         Task<bool> DeletePhongBanAsync(int id);
         Task<int> AddPhongBanAsync(PhongBan phongBan);
-        Task<int> UpdatePhongBanAsync(PhongBan phongBan);
+        Task<int> UpdatePhongBanAsync(PutPhongBan putPhongBan);
+        Task<bool> SapXepPhongBanAsync(List<PutSapXep> phongBans);
     }
     public class PhongBanSvc:IPhongBan
     {
@@ -70,6 +72,15 @@ namespace Digital_Signatues.Services
             int ret = 0;
             try
             {
+                var phongban = await _context.PhongBans.OrderByDescending(x => x.Order).Take(1).FirstOrDefaultAsync();
+                if(phongban==null)
+                {
+                    phongBan.Order = 1;
+                }
+                else
+                {
+                    phongBan.Order = phongban.Order + 1;
+                }
                 await _context.PhongBans.AddAsync(phongBan);
                 await _context.SaveChangesAsync();
                 ret = phongBan.Ma_PhongBan;
@@ -81,19 +92,45 @@ namespace Digital_Signatues.Services
             return ret;
         }
 
-        public async Task<int> UpdatePhongBanAsync(PhongBan phongBan)
+        public async Task<int> UpdatePhongBanAsync(PutPhongBan putPhongBan)
         {
             int ret = 0;
             try
             {
-                _context.PhongBans.Update(phongBan);
+                var update=await _context.PhongBans.Where(x=>x.Ma_PhongBan==putPhongBan.Ma_PhongBan).FirstOrDefaultAsync();
+                update.Ten_PhongBan = putPhongBan.Ten_PhongBan;
+                _context.PhongBans.Update(update);
                 await _context.SaveChangesAsync();
-                ret = phongBan.Ma_PhongBan;
+                ret = update.Ma_PhongBan;
             }
             catch
             {
                 ret = 0;
             }
+            return ret;
+        }
+        public async Task<bool> SapXepPhongBanAsync(List<PutSapXep> phongBans)
+        {
+            bool ret = false;
+            try
+            {
+                foreach (var item in phongBans)
+                {
+                    PhongBan phongban = await _context.PhongBans.Where(x => x.Ma_PhongBan == item.Id).FirstOrDefaultAsync();
+                    if (phongban.Order == item.Order)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        phongban.Order = item.Order;
+                        _context.PhongBans.Update(phongban);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
             return ret;
         }
     }

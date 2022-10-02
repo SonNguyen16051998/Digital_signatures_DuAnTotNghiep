@@ -29,7 +29,7 @@ namespace Digital_Signatues.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Oder")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<string>("Ten_ChucDanh")

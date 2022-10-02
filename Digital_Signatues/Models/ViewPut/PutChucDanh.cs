@@ -1,18 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
-namespace Digital_Signatues.Models
+namespace Digital_Signatues.Models.ViewPut
 {
-    public class ChucDanh
+    public class PutChucDanh
     {
         [Key]
         public int Ma_ChucDanh { get; set; }
         [Required(ErrorMessage = "Bạn cần nhập tên chức vụ!!!")]
         [Column(TypeName = "nvarchar(100)"), Display(Name = "Chức vụ")]
         public string Ten_ChucDanh { get; set; }
-        public int Order { get; set; }
-        public bool IsDeleted { get; set; }
-        public NguoiDung NguoiDung { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPut;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Digital_Signatues.Services
         Task<Quyen> GetQuyenAsync(int id);
         Task<bool> DeleteQuyenAsync(int id); 
         Task<int> AddQuyenAsync (Quyen quyen);
-        Task<int> UpdateQuyenAsync(Quyen quyen);
+        Task<int> UpdateQuyenAsync(PutQuyen putQuyen);
     }
     public class QuyenSvc:IQuyen
     {
@@ -82,14 +83,16 @@ namespace Digital_Signatues.Services
             return ret;
         }
 
-        public async Task<int> UpdateQuyenAsync(Quyen quyen)
+        public async Task<int> UpdateQuyenAsync(PutQuyen putQuyen)
         {
             int ret = 0;
             try
             {
-                _context.Quyens.Update(quyen);
+                var update = await _context.Quyens.Where(x => x.Ma_Quyen == putQuyen.Ma_Quyen).FirstOrDefaultAsync();
+                update.Ten_Quyen=putQuyen.Ten_Quyen;
+                _context.Quyens.Update(update);
                 await _context.SaveChangesAsync();
-                ret = quyen.Ma_Quyen;   
+                ret = update.Ma_Quyen;   
             }
             catch
             {

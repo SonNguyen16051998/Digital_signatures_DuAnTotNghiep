@@ -53,10 +53,10 @@ namespace Digital_Signatues.Services
                                 Ma_Quyen=item1.Ma_Quyen
                             };
                             await _context.NguoiDung_Quyens.AddAsync(postnguoidung_quyen);
+                            await _context.SaveChangesAsync();
                         }
                     }
                 }
-                await _context.SaveChangesAsync();
                 ret = true;
             }
             catch

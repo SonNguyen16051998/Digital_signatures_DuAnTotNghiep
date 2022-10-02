@@ -1,5 +1,6 @@
 ﻿using Digital_Signatues.Models;
 using Digital_Signatues.Models.ViewPost;
+using Digital_Signatues.Models.ViewPut;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace Digital_Signatues.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class ChucDanhsController : Controller
     {
         private readonly IChucDanh _chucDanh;
@@ -20,7 +21,7 @@ namespace Digital_Signatues.Controllers
         /// hiển thị toàn bộ chức danh bao gồm người dùng thuộc chức danh tương ứng
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet,ActionName("chucdanh")]
         public async Task<List<ChucDanh>> GetChucDanhsAsync()
         {
             return await _chucDanh.GetChucDanhsAsync();
@@ -30,7 +31,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã chức danh</param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), ActionName("chucdanh")]
         public async Task<ChucDanh> GetChucDanhAsync(int id)
         {
             return await _chucDanh.GetChucDanhAsync(id);
@@ -40,7 +41,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="chucDanh">trong object chức danh chỉ cần truyền về tên chức danh còn lại để null</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost, ActionName("chucdanh")]
         public async Task<IActionResult> PostChucDanhAsync([FromBody] PostChucDanh chucDanh)
         {// thêm chức danh chỉ cần gửi tên chức danh
             if (ModelState.IsValid)
@@ -48,7 +49,7 @@ namespace Digital_Signatues.Controllers
                 ChucDanh addChucDanh = new ChucDanh()
                 {
                     IsDeleted = false,
-                    Oder = 0,
+                    Order = 0,
                     Ten_ChucDanh = chucDanh.Ten_ChucDanh
                 };
                 int id_ChucDanh = await _chucDanh.AddChucDanhAsync(addChucDanh);
@@ -72,14 +73,14 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// cập nhật chức danh
         /// </summary>
-        /// <param name="chucDanh">truyền đầy đủ dữ liệu không được bỏ trống</param>
+        /// <param name="putChucDanh">truyền đầy đủ dữ liệu không được bỏ trống</param>
         /// <returns></returns>
-        [HttpPut]
-        public async Task<IActionResult> PutChucDanhAsync(ChucDanh chucDanh)
+        [HttpPut, ActionName("chucdanh")]
+        public async Task<IActionResult> PutChucDanhAsync(PutChucDanh putChucDanh)
         {//cập nhật chức danh truyền đầy đủ dữ liệu
             if (ModelState.IsValid)
             {
-                int id_chucDanh = await _chucDanh.UpdateChucDanhAsync(chucDanh);
+                int id_chucDanh = await _chucDanh.UpdateChucDanhAsync(putChucDanh);
                 if ( id_chucDanh> 0)
                 {
                     return Ok(new
@@ -102,7 +103,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã chức danh</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpDelete("{id}"), ActionName("chucdanh")]
         public async Task<IActionResult> DeleteChucDanhAsync(int id)
         {
             if (await _chucDanh.DeleteChucDanhAsync(id))
@@ -118,6 +119,33 @@ namespace Digital_Signatues.Controllers
             {
                 retCode = 0,
                 retText = "Xóa chức danh thất bại",
+                data = ""
+            });
+        }
+        /// <summary>
+        /// sắp xếp thứ tự chức danh
+        /// </summary>
+        /// <param name="chucDanhs"></param>
+        /// <returns></returns>
+        [HttpPut, ActionName("sapxep")]
+        public async Task<IActionResult> SapXepThuTuAsync(List<PutSapXep> chucDanhs)
+        {
+            if(ModelState.IsValid)
+            {
+                if(await _chucDanh.SapXepThuTuAsync(chucDanhs))
+                {
+                    return Ok(new
+                    {
+                        retCode = 1,
+                        retText = "Sắp xếp chức danh thành công",
+                        data = await _chucDanh.GetChucDanhsAsync()
+                    });
+                }
+            }
+            return Ok(new
+            {
+                retCode = 0,
+                retText = "Sắp xếp chức danh thất bại",
                 data = ""
             });
         }

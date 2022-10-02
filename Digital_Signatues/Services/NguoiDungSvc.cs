@@ -1,6 +1,7 @@
 ﻿using Digital_Signatues.Helpers;
 using Digital_Signatues.Models;
 using Digital_Signatues.Models.ViewModel;
+using Digital_Signatues.Models.ViewPut;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Digital_Signatues.Services
         Task<bool> isPass(string email, string pass);
         Task<bool> isEmail(string email);
         Task<int> AddNguoiDungAsync(NguoiDung nguoiDung);
-        Task<int> UpdateNguoiDungAsync(NguoiDung nguoiDung);
+        Task<int> UpdateNguoiDungAsync(PutNguoiDung putNguoiDung);
         Task<bool> CreateOrUpdateOTPAsync(OTP oTP);//tạo mã otp hoặc cập nhật mã otp mới cho email đã tồn tại
         Task<bool> ConfirmOTPAsync(string email,string otp);//xác nhận OTP sau khi nhập mã OTP
         Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau);//đổi mật khẩu mới khi chọn chức năng quên mật khẩu
@@ -111,14 +112,21 @@ namespace Digital_Signatues.Services
             catch { ret = 0; }
             return ret;
         }
-        public async Task<int> UpdateNguoiDungAsync(NguoiDung nguoiDung)
+        public async Task<int> UpdateNguoiDungAsync(PutNguoiDung putNguoiDung)
         {
             int ret = 0;
             try
             {
-                _context.NguoiDungs.Update(nguoiDung);
+                var update=await _context.NguoiDungs.Where(x=>x.Ma_NguoiDung==putNguoiDung.Ma_NguoiDung).FirstOrDefaultAsync();
+                update.HoTen = putNguoiDung.HoTen;
+                update.Sdt=putNguoiDung.Sdt;
+                update.DiaChi = putNguoiDung.DiaChi;
+                update.GioiTinh=putNguoiDung.GioiTinh;
+                update.Block=putNguoiDung.Block;
+                update.Avatar = putNguoiDung.Avatar;
+                _context.NguoiDungs.Update(update);
                 await _context.SaveChangesAsync();
-                ret = nguoiDung.Ma_NguoiDung;
+                ret = update.Ma_NguoiDung;
             }
             catch { ret = 0; }
             return ret;
@@ -144,7 +152,7 @@ namespace Digital_Signatues.Services
                     await _context.SaveChangesAsync();
                 }
                 SendEmailHelper.SendEmail(oTP.email, oTP.Otp);
-                result=true;
+                result =true;
             }
             catch
             { 
@@ -206,7 +214,7 @@ namespace Digital_Signatues.Services
         {
             List<NguoiDung> nguoiDungs=new List<NguoiDung>();
             nguoiDungs = await _context.NguoiDungs
-                            .OrderBy(x=>x.ChucDanh.Oder)
+                            .OrderBy(x=>x.ChucDanh.Order)
                             .Include(x=>x.ChucDanh)
                             .Include(x=>x.NguoiDung_PhongBan)
                             .ToListAsync();

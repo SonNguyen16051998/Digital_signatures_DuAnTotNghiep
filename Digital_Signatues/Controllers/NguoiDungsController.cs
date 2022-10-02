@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using Digital_Signatues.Models.ViewPost;
+using Digital_Signatues.Models.ViewPut;
 
 namespace Digital_Signatues.Controllers
 {
@@ -95,14 +96,14 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// cập nhật thông tin người dùng.cần truyền đầy đủ thông tin bao gồm trường block và isdeleted. không cho cập nhật email
         /// </summary>
-        /// <param name="nguoiDung"></param>
+        /// <param name="putNguoiDung"></param>
         /// <returns></returns>
         [HttpPut,ActionName("nguoidung")]
-        public async Task<IActionResult> UpdateNguoiDungAsync([FromBody]NguoiDung nguoiDung)
+        public async Task<IActionResult> UpdateNguoiDungAsync([FromBody]PutNguoiDung putNguoiDung)
         {
             if(ModelState.IsValid)
             {
-                int id_nguoiDung = await _nguoiDung.UpdateNguoiDungAsync(nguoiDung);
+                int id_nguoiDung = await _nguoiDung.UpdateNguoiDungAsync(putNguoiDung);
                 if (id_nguoiDung>0)
                 {
                     return Ok(new
@@ -195,19 +196,23 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// chức năng nhận mã OTP khi xác nhận xong capcha và nhập email chính xác. cần nhập email đã có tài khoản
         /// </summary>
-        /// <param name="maOTP">trả về obect OTP chỉ cần trả về email. còn lại trả về null</param>
+        /// <param name="maOTP"></param>
         /// <returns></returns>
         [HttpPut,ActionName("maotp")]
-        public async Task<IActionResult> CreateOrUpdateOTPAsync(OTP maOTP)//truyền về email,mặc định(otp=null,isuse=false)
-        {
-            maOTP.Otp = RandomOTPHelper.random();
-            maOTP.isUse = false;
-            maOTP.expiredAt = DateTime.Now.AddMinutes(2);
-            if(ModelState.IsValid)
+        public async Task<IActionResult> CreateOrUpdateOTPAsync(PostOTP maOTP)//truyền về email,mặc định(otp=null,isuse=false)
+        { 
+            if (ModelState.IsValid)
             {
-                if(await _nguoiDung.isEmail(maOTP.email))
+                OTP oTP = new OTP()
                 {
-                    if (await _nguoiDung.CreateOrUpdateOTPAsync(maOTP))
+                    email=maOTP.Email,
+                    Otp = RandomOTPHelper.random(),
+                    isUse = false,
+                    expiredAt = DateTime.Now.AddMinutes(2)
+                };
+                if (await _nguoiDung.isEmail(maOTP.Email))
+                {
+                    if (await _nguoiDung.CreateOrUpdateOTPAsync(oTP))
                     {
                         return Ok(new
                         {
@@ -215,8 +220,8 @@ namespace Digital_Signatues.Controllers
                             retText = "Mã otp đã được gửi đến email",
                             data = new
                             {
-                                Email=maOTP.email,
-                                OTP=maOTP.Otp
+                                Email=maOTP.Email,
+                                OTP=oTP.Otp
                             }
                         });
                     }
@@ -244,11 +249,11 @@ namespace Digital_Signatues.Controllers
         /// <param name="maOTP">truyền về object OTP gồm email, mã otp, còn lại có thể để null</param>
         /// <returns></returns>
         [HttpPut,ActionName("xacnhanotp")]
-        public async Task<IActionResult> XacNhanOTP(OTP maOTP)//truyền về email và mã otp ,mặc định isuse=false
+        public async Task<IActionResult> XacNhanOTP(PutOTP maOTP)//truyền về email và mã otp ,mặc định isuse=false
         {
             if(ModelState.IsValid)
             {
-                if(await _nguoiDung.ConfirmOTPAsync(maOTP.email,maOTP.Otp))
+                if(await _nguoiDung.ConfirmOTPAsync(maOTP.Email,maOTP.OTP))
                 {
                     return Ok(new
                     {
@@ -279,7 +284,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã người dùng</param>
         /// <returns></returns>
-        [HttpPut("{id}"),ActionName("deletenguoidung")]
+        [HttpDelete("{id}"),ActionName("deletenguoidung")]
         public async Task<IActionResult> DeleteNguoiDungAsync(int id)
         {
             if(id>0)

@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using Digital_Signatues.Models.ViewPost;
+using Digital_Signatues.Models.ViewPut;
 
 namespace Digital_Signatues.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class PhongBansController : Controller
     {
         private readonly IPhongBan _phongBan;
@@ -23,7 +24,7 @@ namespace Digital_Signatues.Controllers
         /// lấy toàn bộ phòng ban bao gồm nhân viên thuộc vào
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet,ActionName("phongban")]
         public async Task<List<PhongBan>> GetPhongBansAsync()
         {
             return await _phongBan.GetPhongBansAsync();
@@ -33,7 +34,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), ActionName("phongban")]
         public async Task<PhongBan> GetPhongBanAsync(int id)
         {
             return await _phongBan.GetPhongBanAsync(id);
@@ -43,7 +44,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="phongBan">truyền về object phongban.trường isdeleted,order và ngaytao để null</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost, ActionName("phongban")]
         public async Task<IActionResult> PostPhongBanAsync([FromBody]PostPhongBan phongBan)
         {
             if(ModelState.IsValid)
@@ -76,14 +77,14 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// cập nhật phòng ban
         /// </summary>
-        /// <param name="phongBan">truyền đầy đủ dữ liệu của object phongban</param>
+        /// <param name="putPhongBan">truyền đầy đủ dữ liệu của object phongban</param>
         /// <returns></returns>
-        [HttpPut]
-        public async Task<IActionResult> PutPhongbanAsync(PhongBan phongBan)
+        [HttpPut, ActionName("phongban")]
+        public async Task<IActionResult> PutPhongbanAsync([FromBody] PutPhongBan putPhongBan)
         {
             if (ModelState.IsValid)
             {
-                int id_Phongban = await _phongBan.UpdatePhongBanAsync(phongBan);
+                int id_Phongban = await _phongBan.UpdatePhongBanAsync(putPhongBan);
                 if ( id_Phongban> 0)
                 {
                     return Ok(new
@@ -106,7 +107,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã phòng ban</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpDelete("{id}"), ActionName("phongban")]
         public async Task<IActionResult> DeletePhongbanAsync(int id)//id phòng ban
         {
             if(await _phongBan.DeletePhongBanAsync(id))
@@ -122,6 +123,33 @@ namespace Digital_Signatues.Controllers
             {
                 retCode = 0,
                 retText = "Phòng ban đang có người làm việc không thể xóa",
+                data = ""
+            });
+        }
+        /// <summary>
+        /// sắp xếp phòng ban
+        /// </summary>
+        /// <param name="phongBans"></param>
+        /// <returns></returns>
+        [HttpPut, ActionName("sapxep")]
+        public async Task<IActionResult> SapXepPhongBanAsync(List<PutSapXep> phongBans)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await _phongBan.SapXepPhongBanAsync(phongBans))
+                {
+                    return Ok(new
+                    {
+                        retCode = 1,
+                        retText = "Sắp xếp phòng ban thành công",
+                        data = await _phongBan.GetPhongBansAsync()
+                    });
+                }
+            }
+            return Ok(new
+            {
+                retCode = 0,
+                retText = "Sắp xếp phòng ban thất bại",
                 data = ""
             });
         }

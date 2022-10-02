@@ -1,4 +1,5 @@
 ﻿using Digital_Signatues.Models;
+using Digital_Signatues.Models.ViewPut;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Digital_Signatues.Services
         Task<Role> GetRoleAsync(int id);
         Task<bool> DeleteRoleAsync(int id);
         Task<int> AddRoleAsync(Role role);
-        Task<int> UpdateRoleAsync(Role role);
+        Task<int> UpdateRoleAsync(PutRole putRole);
     }
     public class RoleSvc:IRole
     {
@@ -81,14 +82,16 @@ namespace Digital_Signatues.Services
             return ret;
         }
 
-        public async Task<int> UpdateRoleAsync(Role role)
+        public async Task<int> UpdateRoleAsync(PutRole putRole)
         {
             int ret = 0;
             try
             {
-                _context.Roles.Update(role);
+                var update=await _context.Roles.Where(x=>x.Ma_Role==putRole.Ma_Role).FirstOrDefaultAsync();
+                update.Ten_Role=putRole.Ten_Role;
+                _context.Roles.Update(update);
                 await _context.SaveChangesAsync();
-                ret = role.Ma_Role;
+                ret = update.Ma_Role;
             }
             catch
             {

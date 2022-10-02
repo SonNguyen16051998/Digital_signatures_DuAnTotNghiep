@@ -1,5 +1,6 @@
 ﻿using Digital_Signatues.Models;
 using Digital_Signatues.Models.ViewPost;
+using Digital_Signatues.Models.ViewPut;
 using Digital_Signatues.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -71,14 +72,14 @@ namespace Digital_Signatues.Controllers
         /// <summary>
         /// cập nhật role
         /// </summary>
-        /// <param name="role">truyền về tên và isdelted=false</param>
+        /// <param name="putRole">truyền về tên và isdelted=false</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> PutRoleAsync(Role role)
+        public async Task<IActionResult> PutRoleAsync([FromBody]PutRole putRole)
         {
             if (ModelState.IsValid)
             {
-                int id_Role = await _role.UpdateRoleAsync(role);
+                int id_Role = await _role.UpdateRoleAsync(putRole);
                 if ( id_Role> 0)
                 {
                     return Ok(new
@@ -101,7 +102,7 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <param name="id">mã vai trò</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoleAsync(int id)
         {
             if (await _role.DeleteRoleAsync(id))
