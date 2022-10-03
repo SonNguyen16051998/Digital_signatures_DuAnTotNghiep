@@ -25,9 +25,14 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet,ActionName("nguoidung")]
-        public async Task<List<NguoiDung>> GetNguoiDungsAsync() //lấy toàn bộ danh sách người dùng
+        public async Task<IActionResult> GetNguoiDungsAsync() //lấy toàn bộ danh sách người dùng
         {
-            return await _nguoiDung.GetNguoiDungsAsync();
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách người dùng thành công",
+                data = await _nguoiDung.GetNguoiDungsAsync()
+            });
         }
         /// <summary>
         /// trả về người dùng được chọn
@@ -35,9 +40,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">mã người dùng</param>
         /// <returns></returns>
         [HttpGet("{id}"),ActionName("nguoidung")]
-        public async Task<NguoiDung> GetNguoiDungAsync(int id) //lấy người dùng bằng mã người dùng
+        public async Task<IActionResult> GetNguoiDungAsync(int id) //lấy người dùng bằng mã người dùng
         {
-            return await _nguoiDung.GetNguoiDungAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy người dùng thành công",
+                data = await _nguoiDung.GetNguoiDungAsync(id)
+            });
         }
         /// <summary>
         /// thêm người dùng. không cần truyền trường block và isdeleted. cần nhập email chưa đăng ký tài khoản

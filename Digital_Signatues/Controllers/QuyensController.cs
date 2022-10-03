@@ -22,9 +22,14 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<Quyen>> GetQuyensAsync()
+        public async Task<IActionResult> GetQuyensAsync()
         {
-            return await _quyen.GetQuyensAsync();
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách quyền thành công",
+                data = await _quyen.GetQuyensAsync()
+            });
         }
         /// <summary>
         /// trả về quyền được chọn
@@ -32,9 +37,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">mã quyền</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<Quyen> GetQuyenAsync(int id)
+        public async Task<IActionResult> GetQuyenAsync(int id)
         {
-            return await _quyen.GetQuyenAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy quyền thành công",
+                data = await _quyen.GetQuyenAsync(id)
+            });
         }
         /// <summary>
         /// thêm quyền

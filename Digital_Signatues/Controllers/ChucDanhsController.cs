@@ -22,9 +22,14 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet,ActionName("chucdanh")]
-        public async Task<List<ChucDanh>> GetChucDanhsAsync()
+        public async Task<IActionResult> GetChucDanhsAsync()
         {
-            return await _chucDanh.GetChucDanhsAsync();
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách chức danh thành công",
+                data = await _chucDanh.GetChucDanhsAsync()
+            }); 
         }
         /// <summary>
         /// trả về chức danh vừa chọn bao gồm người dùng thuộc chức danh đó
@@ -32,9 +37,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">mã chức danh</param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("chucdanh")]
-        public async Task<ChucDanh> GetChucDanhAsync(int id)
+        public async Task<IActionResult> GetChucDanhAsync(int id)
         {
-            return await _chucDanh.GetChucDanhAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy chức danh thành công",
+                data = await _chucDanh.GetChucDanhAsync(id)
+            });
         }
         /// <summary>
         /// thêm chức danh

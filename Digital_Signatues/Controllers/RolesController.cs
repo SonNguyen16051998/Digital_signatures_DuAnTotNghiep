@@ -22,9 +22,14 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<Role>> GetRolesAsync()
+        public async Task<IActionResult> GetRolesAsync()
         {
-            return await _role.GetRolesAsync();
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách vai trò thành công",
+                data = await _role.GetRolesAsync()
+            });
         }
         /// <summary>
         /// trả về vai trò được chọn
@@ -32,9 +37,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">mã vai trò</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<Role> GetRoleAsync(int id)
+        public async Task<IActionResult> GetRoleAsync(int id)
         {
-            return await _role.GetRoleAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy vai trò thành công",
+                data = await _role.GetRoleAsync(id)
+            });
         }
         /// <summary>
         /// thêm vai trò

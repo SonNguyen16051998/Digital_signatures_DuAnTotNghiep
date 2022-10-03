@@ -25,9 +25,14 @@ namespace Digital_Signatues.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet,ActionName("phongban")]
-        public async Task<List<PhongBan>> GetPhongBansAsync()
+        public async Task<IActionResult> GetPhongBansAsync()
         {
-            return await _phongBan.GetPhongBansAsync();
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách phòng ban thành công",
+                data = await _phongBan.GetPhongBansAsync()
+            });
         }
         /// <summary>
         /// hiển thị phòng ban được chọn bao gồm nhân viên thuộc vào
@@ -35,9 +40,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("phongban")]
-        public async Task<PhongBan> GetPhongBanAsync(int id)
+        public async Task<IActionResult> GetPhongBanAsync(int id)
         {
-            return await _phongBan.GetPhongBanAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách phòng ban thành công",
+                data = await _phongBan.GetPhongBanAsync(id)
+            });
         }
         /// <summary>
         /// thêm phòng ban
