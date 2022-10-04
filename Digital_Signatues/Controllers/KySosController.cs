@@ -43,6 +43,23 @@ namespace Digital_Signatues.Controllers
                     string name = Path.GetFileNameWithoutExtension(signs.inputFile);
                     string fontPath = Path.Combine(_environment.WebRootPath, "Font", "ARIALUNI.TTF");
                     Certicate myCert = new Certicate(Path.Combine(_environment.WebRootPath, "Font", "chinhchu.pfx"), "chinhchu");
+                    string subjectinfo = "";
+                    foreach(var item1 in myCert.subject)
+                    {
+                        subjectinfo += item1;
+                    }
+                    string serialinfo = "";
+                    foreach (var item2 in myCert.serial)
+                    {
+                        serialinfo += item2;
+                    }
+                    
+                    var thongsofilepfx = new PostThongSoFilePfx()
+                    {
+                        Ma_NguoiDung = signs.Id_NguoiDung,
+                        Subject =subjectinfo,
+                        Serial = serialinfo
+                    };
                     PDFSigner pdfs = new PDFSigner();
                     for(int i = 0;i<1000;i++)
                     {
@@ -66,7 +83,7 @@ namespace Digital_Signatues.Controllers
                     if(!string.IsNullOrEmpty(item.textSign))
                     {
                         var rectangle = new iTextSharp.text.Rectangle((int)item.x,(int) item.y);
-                        pdfs.SignText("kí thử", "", "", item.textSign, rectangle, 1, fieldName);
+                        pdfs.SignText("kí thử", "", "", item.textSign, rectangle, item.pageSign, fieldName);
                     }
                     else
                     {

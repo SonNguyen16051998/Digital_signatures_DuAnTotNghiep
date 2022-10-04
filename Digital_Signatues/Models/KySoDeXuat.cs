@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,19 +9,14 @@ namespace Digital_Signatues.Models
     {
         [Key]
         public int Ma_KySoDeXuat { get; set; }
-        [ForeignKey("KySo")]
-        public int Ma_KySo { get; set; }
-        [Column(TypeName ="nvarchar(255)")]
-        public string Message { get; set; }
-        [ForeignKey("NguoiDung")]
-        public int Ma_NguoiDung { get; set; }
-        public DateTime UpdateTime { get; set; }
-        [ForeignKey("KySoFile")]
-        public int Ma_KySoFile { get; set; }
-        [Column(TypeName = "nvarchar(255)")]
-        public string TenFile { get; set; }
-        public KySo KySo { get; set; }
-        public NguoiDung NguoiDung { get; set;}
-        public KySoFile KySoFile { get; set; }
+        [ForeignKey("NguoiDungDeXuat")]
+        public int Ma_NguoiDeXuat { get; set; }
+        [ForeignKey("NguoiDungKy")]
+        public string inputFile { get; set; }
+        public DateTime NgayDeXuat { get; set; }
+        [Column(TypeName = "nvarchar(1000)")]
+        public NguoiDung NguoiDungDeXuat { get; set;}
+        public KySoDaKy KySoDaKy { get; set; }  
+        public ICollection<KySoQuyTrinh> KySoQuyTrinhs { get; set; }
     }
 }

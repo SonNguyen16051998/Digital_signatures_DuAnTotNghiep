@@ -94,8 +94,8 @@ namespace Digital_Signatues.Controllers
                 {
                     return Ok(new
                     {
-                        retCode = 0,
-                        retText = "Dữ liệu không hợp lệ",
+                        retCode = 1,
+                        retText = "Cập nhật vai trò thành công",
                         data = await _role.GetRoleAsync(id_Role)
                     });
                 }

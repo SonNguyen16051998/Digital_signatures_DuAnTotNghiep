@@ -12,6 +12,5 @@ namespace Digital_Signatues.Models
         public string Ten_Role { get; set;}
         public bool IsDeleted { get; set; }
         public ICollection<NguoiDung_Role> NguoiDung_Role { get; set; }
-       /* public ICollection<KySoLog> KySoLogs { get; set; }*/
     }
 }

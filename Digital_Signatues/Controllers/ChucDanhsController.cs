@@ -128,7 +128,7 @@ namespace Digital_Signatues.Controllers
             return Ok(new
             {
                 retCode = 0,
-                retText = "Xóa chức danh thất bại",
+                retText = "Xóa chức danh thất bại. Chức danh đang có người sử dụng không được xóa",
                 data = ""
             });
         }

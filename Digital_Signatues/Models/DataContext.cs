@@ -51,16 +51,6 @@ namespace Digital_Signatues.Models
         }
 
         public DbSet<ChucDanh> ChucDanhs { get; set; }
-/*        public DbSet<KySo> KySos { get; set; }
-        public DbSet<KySoDeXuat> KySoDeXuats { get; set; }
-        public DbSet<KySoFile> KySoFiles { get; set;}
-        public DbSet<KySoFileDetail> KySoFileDetails { get; set; }
-        public DbSet<KySoLog> KySoLogs { get; set; }
-        public DbSet<KySoNguoiDuyet> KySoNguoiDuyets { get; set; }
-        public DbSet<KySoQuyTrinh> KySoQuyTrinhs { get; set; }
-        public DbSet<KySoThongSo> KySoThongSos { get; set; }
-        public DbSet<KySoThongSoHinh> KySoThongSoHinhs { get; set; }
-        public DbSet<KySoVungKy> KySoVungKys { get; set; }*/
         public DbSet<NguoiDung> NguoiDungs { get; set; }
         public DbSet<NguoiDung_PhongBan> NguoiDung_PhongBans { get; set; }
         public DbSet<NguoiDung_Quyen> NguoiDung_Quyens { get; set; }
@@ -71,5 +61,6 @@ namespace Digital_Signatues.Models
         public DbSet<Role_Quyen> Role_Quyens { get; set; }
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<KySoTest> KySoTests { get; set;}
+        public DbSet<KySoThongSo> KySoThongSos { get; set; }
     }
 }
