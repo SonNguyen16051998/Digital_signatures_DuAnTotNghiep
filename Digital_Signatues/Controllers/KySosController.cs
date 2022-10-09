@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.util;
@@ -18,11 +19,13 @@ namespace Digital_Signatues.Controllers
     public class KySosController : Controller
     {
         private readonly IKySo _kyso;
+        private readonly IKySoThongSo _thongso;
         private readonly IHostingEnvironment _environment;
-        public KySosController(IKySo kyso, IHostingEnvironment environment)
+        public KySosController(IKySo kyso, IHostingEnvironment environment,IKySoThongSo thongso)
         {
             _kyso = kyso;
             _environment = environment;
+            _thongso = thongso;
         }
         /// <summary>
         /// ký thử
@@ -42,24 +45,18 @@ namespace Digital_Signatues.Controllers
                     string fieldName = "";
                     string name = Path.GetFileNameWithoutExtension(signs.inputFile);
                     string fontPath = Path.Combine(_environment.WebRootPath, "Font", "ARIALUNI.TTF");
-                    Certicate myCert = new Certicate(Path.Combine(_environment.WebRootPath, "Font", "chinhchu.pfx"), "chinhchu");
-                    string subjectinfo = "";
-                    foreach(var item1 in myCert.subject)
+                    var thongso = await _thongso.GetThongSoNguoiDungAsync(signs.Id_NguoiDung);
+                    Certicate myCert = new Certicate(thongso.FilePfx,thongso.PasscodeFilePfx);
+                    X509Certificate cert = new X509Certificate(thongso.FilePfx, thongso.PasscodeFilePfx);
+
+                    if (await _thongso.CheckSubjectFileAsync(signs.Id_NguoiDung) != cert.Subject)
                     {
-                        subjectinfo += item1;
+                        PostThongSoFilePfx thongsofilepfx = new PostThongSoFilePfx();
+                        thongsofilepfx.Ma_NguoiDung = signs.Id_NguoiDung;
+                        thongsofilepfx.Subject = cert.Subject;
+                        thongsofilepfx.Serial = cert.GetSerialNumberString();
+                        await _thongso.CapNhatThongSoFileAsync(thongsofilepfx);
                     }
-                    string serialinfo = "";
-                    foreach (var item2 in myCert.serial)
-                    {
-                        serialinfo += item2;
-                    }
-                    
-                    var thongsofilepfx = new PostThongSoFilePfx()
-                    {
-                        Ma_NguoiDung = signs.Id_NguoiDung,
-                        Subject =subjectinfo,
-                        Serial = serialinfo
-                    };
                     PDFSigner pdfs = new PDFSigner();
                     for(int i = 0;i<1000;i++)
                     {
@@ -83,7 +80,7 @@ namespace Digital_Signatues.Controllers
                     if(!string.IsNullOrEmpty(item.textSign))
                     {
                         var rectangle = new iTextSharp.text.Rectangle((int)item.x,(int) item.y);
-                        pdfs.SignText("kí thử", "", "", item.textSign, rectangle, item.pageSign, fieldName);
+                        pdfs.SignText(thongso.LyDoMacDinh, "", "", item.textSign, rectangle, item.pageSign, fieldName);
                     }
                     else
                     {
@@ -91,7 +88,7 @@ namespace Digital_Signatues.Controllers
 
                         string inputImg = item.imgSign;
                         var rectangle = new iTextSharp.text.Rectangle(recJ);
-                        pdfs.SignImage("kí thử", "", "", inputImg, rectangle, item.pageSign, fieldName, false);
+                        pdfs.SignImage(thongso.LyDoMacDinh, "", "", inputImg, rectangle, item.pageSign, fieldName, false);
                     }
                 }
                 return Ok(new

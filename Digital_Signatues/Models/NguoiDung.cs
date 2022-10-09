@@ -49,6 +49,7 @@ namespace Digital_Signatues.Models
         public string RetypePassWord { get; set; }
         public bool Block { get; set; }
         public bool IsDeleted { get; set;}
+        public bool IsThongSo { get; set;}
         public ChucDanh ChucDanh { get;set; }
         public ICollection<NguoiDung_PhongBan> NguoiDung_PhongBan { get; set; }
         public ICollection<NguoiDung_Role> NguoiDung_Role { get; set; }

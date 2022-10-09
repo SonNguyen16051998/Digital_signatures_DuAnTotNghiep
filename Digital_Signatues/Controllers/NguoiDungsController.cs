@@ -65,13 +65,14 @@ namespace Digital_Signatues.Controllers
                     Block = false,
                     IsDeleted = false,
                     Email = nguoiDung.Email,
-                    HoTen=nguoiDung.HoTen,
-                    Avatar=nguoiDung.Avatar,
-                    DiaChi=nguoiDung.DiaChi,
-                    PassWord=nguoiDung.PassWord,
-                    Sdt=nguoiDung.Sdt,
-                    GioiTinh=nguoiDung.GioiTinh,
-                    Ma_ChucDanh=nguoiDung.Ma_ChucDanh
+                    HoTen = nguoiDung.HoTen,
+                    Avatar = nguoiDung.Avatar,
+                    DiaChi = nguoiDung.DiaChi,
+                    PassWord = nguoiDung.PassWord,
+                    Sdt = nguoiDung.Sdt,
+                    GioiTinh = nguoiDung.GioiTinh,
+                    Ma_ChucDanh = nguoiDung.Ma_ChucDanh,
+                    IsThongSo = false
                 };
                 if(await _nguoiDung.isEmail(nguoiDung.Email))
                 {

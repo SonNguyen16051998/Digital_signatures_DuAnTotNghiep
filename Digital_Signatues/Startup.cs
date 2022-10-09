@@ -52,6 +52,7 @@ namespace Digital_Signatues
             services.AddTransient<IRole_Quyen, Role_QuyenSvc>();
             services.AddTransient<INguoiDung_PhongBan,NguoiDung_PhongBanSvc>();
             services.AddTransient<IKySo, KySoSvc>();
+            services.AddTransient<IKySoThongSo, KySoThongSoSvc>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

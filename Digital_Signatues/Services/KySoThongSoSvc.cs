@@ -13,20 +13,22 @@ namespace Digital_Signatues.Services
         Task<int> AddThongSoNguoiDungAsync(PostKySoThongSo PostKySoThongSo);//them thong so cho nguoi dung
         Task<KySoThongSo> GetThongSoNguoiDungAsync(int ma_nguoidung);//lay thong so cua mot nguoi dung
         Task<List<KySoThongSo>> GetThongSoNguoiDungsAsync();//lay toan bo nguoi dung co thong so
-        Task<bool> CheckThemThongSo(int ma_nguoidung);//kiem tra nguoi dung da co thong so hay chua
         Task<int> UpdateThongSoAsync(PutThongSo PutThongSo);//cap nhat thong so  nguoi dung
         Task<bool> ChangePasscode (PutPasscode putPasscode);//doi passcode
         Task<bool> CauHinhChuKyAsync(PostCauHinhFileChuKy cauHinhFileChuKy);//cấu hình file pfx
-        Task<bool> CapNhatThongSoFileAsync(PostThongSoFilePfx ThongSofilePfx);//lay thong so file pfx
+        Task<bool> CapNhatThongSoFileAsync(PostThongSoFilePfx ThongSofilePfx);//cap nhat thong so file pfx  
+        Task<bool> CheckExistAsync(int ma_nguoidung);//kiểm tra người dùng đã có thông số hay chưa
+        Task<string> CheckSubjectFileAsync(int ma_nguoidung);//kiểm tra subject của người dùng có trùng không
+        Task<bool> DeleteThongSoAsync(int ma_nguoidung);//xóa thông số người dùng
     }
-    public class KySoThongSoSvc
+    public class KySoThongSoSvc:IKySoThongSo
     {
         private readonly DataContext _context;
         public KySoThongSoSvc(DataContext context)
         {
             _context = context;
         }
-        public async Task<int> AddThongSoNguoiDung(PostKySoThongSo PostKySoThongSo)
+        public async Task<int> AddThongSoNguoiDungAsync(PostKySoThongSo PostKySoThongSo)
         {
             int ret = 0;
             try
@@ -45,12 +47,13 @@ namespace Digital_Signatues.Services
                     NgayChuKyHetHan = PostKySoThongSo.NgayChuKyHetHan,
                     Serial = null,
                     Subject = null,
-                    Ma_NguoiKyThuCuoi = null,
-                    NgayKyThuCuoi = null,
                     FilePfx =null,
                     PasscodeFilePfx =null
                 };
                 await _context.KySoThongSos.AddAsync(thongso);
+                var nguoidung = await _context.NguoiDungs.Where(x => x.Ma_NguoiDung == PostKySoThongSo.Ma_NguoiDung).FirstOrDefaultAsync();
+                nguoidung.IsThongSo = true;
+                _context.NguoiDungs.Update(nguoidung);
                 await _context.SaveChangesAsync();
                 ret = PostKySoThongSo.Ma_NguoiDung;
             }
@@ -67,23 +70,6 @@ namespace Digital_Signatues.Services
         public async Task<List<KySoThongSo>> GetThongSoNguoiDungsAsync()
         {
             return await _context.KySoThongSos.ToListAsync();
-        }
-        public async Task<bool> CheckThemThongSo(int ma_nguoidung)
-        {
-            bool result = false;
-            try
-            {
-                var thongso = await _context.KySoThongSos.Where(x => x.Ma_NguoiDung == ma_nguoidung).FirstOrDefaultAsync();
-                if (thongso == null)
-                {
-                    result = true;
-                }
-            }
-            catch
-            {
-                result = false;
-            }
-            return result;
         }
         public async Task<int> UpdateThongSoAsync(PutThongSo PutThongSo)
         {
@@ -156,6 +142,39 @@ namespace Digital_Signatues.Services
                 thongso.Subject = ThongSofilePfx.Subject;
                 thongso.Serial = ThongSofilePfx.Serial;
                 _context.KySoThongSos.Update(thongso);
+                await _context.SaveChangesAsync();
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+        public async Task<bool> CheckExistAsync(int ma_nguoidung)
+        {
+            var thongso = await _context.KySoThongSos.Where(c => c.Ma_NguoiDung == ma_nguoidung).FirstOrDefaultAsync();
+            if(thongso==null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public async Task<string> CheckSubjectFileAsync(int ma_nguoidung)
+        {
+            var thongso = await _context.KySoThongSos.Where(x => x.Ma_NguoiDung == ma_nguoidung).FirstOrDefaultAsync();
+            return thongso.Subject;
+        }
+        public async Task<bool> DeleteThongSoAsync(int ma_nguoidung)
+        {
+            bool result = false;
+            try
+            {
+                var thongso=await _context.KySoThongSos.Where(x=>x.Ma_NguoiDung==ma_nguoidung).FirstOrDefaultAsync();
+                _context.KySoThongSos.Remove(thongso);
                 await _context.SaveChangesAsync();
                 result = true;
             }

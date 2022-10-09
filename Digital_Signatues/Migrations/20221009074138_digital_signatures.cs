@@ -95,7 +95,8 @@ namespace Digital_Signatues.Migrations
                     Ma_ChucDanh = table.Column<int>(type: "int", nullable: false),
                     PassWord = table.Column<string>(type: "varchar(50)", nullable: false),
                     Block = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsThongSo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,6 +155,36 @@ namespace Digital_Signatues.Migrations
                     table.ForeignKey(
                         name: "FK_KySoTests_NguoiDungs_Id_NguoiDung",
                         column: x => x.Id_NguoiDung,
+                        principalTable: "NguoiDungs",
+                        principalColumn: "Ma_NguoiDung",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KySoThongSos",
+                columns: table => new
+                {
+                    Ma_NguoiDung = table.Column<int>(type: "int", nullable: false),
+                    Hinh1 = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    Hinh2 = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    LyDoMacDinh = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    PassCode = table.Column<string>(type: "nvarchar(55)", nullable: false),
+                    Ma_NguoiCapNhatCuoi = table.Column<int>(type: "int", nullable: false),
+                    NgayCapNhatCuoi = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TrangThai = table.Column<bool>(type: "bit", nullable: false),
+                    LoaiChuKy = table.Column<bool>(type: "bit", nullable: true),
+                    NgayChuKyHetHan = table.Column<DateTime>(type: "date", nullable: false),
+                    Serial = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    Subject = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    FilePfx = table.Column<string>(type: "nvarchar(500)", nullable: true),
+                    PasscodeFilePfx = table.Column<string>(type: "nvarchar(500)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KySoThongSos", x => x.Ma_NguoiDung);
+                    table.ForeignKey(
+                        name: "FK_KySoThongSos_NguoiDungs_Ma_NguoiDung",
+                        column: x => x.Ma_NguoiDung,
                         principalTable: "NguoiDungs",
                         principalColumn: "Ma_NguoiDung",
                         onDelete: ReferentialAction.Cascade);
@@ -269,6 +300,9 @@ namespace Digital_Signatues.Migrations
         {
             migrationBuilder.DropTable(
                 name: "KySoTests");
+
+            migrationBuilder.DropTable(
+                name: "KySoThongSos");
 
             migrationBuilder.DropTable(
                 name: "NguoiDung_PhongBans");

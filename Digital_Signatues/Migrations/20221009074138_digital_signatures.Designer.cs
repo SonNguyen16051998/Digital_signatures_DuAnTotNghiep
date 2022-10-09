@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Digital_Signatues.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221002080840_digital_signatures")]
+    [Migration("20221009074138_digital_signatures")]
     partial class digital_signatures
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,56 @@ namespace Digital_Signatues.Migrations
                     b.ToTable("KySoTests");
                 });
 
+            modelBuilder.Entity("Digital_Signatues.Models.KySoThongSo", b =>
+                {
+                    b.Property<int>("Ma_NguoiDung")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FilePfx")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Hinh1")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Hinh2")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool?>("LoaiChuKy")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LyDoMacDinh")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Ma_NguoiCapNhatCuoi")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NgayCapNhatCuoi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("NgayChuKyHetHan")
+                        .HasColumnType("date");
+
+                    b.Property<string>("PassCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(55)");
+
+                    b.Property<string>("PasscodeFilePfx")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Serial")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("TrangThai")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Ma_NguoiDung");
+
+                    b.ToTable("KySoThongSos");
+                });
+
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
                     b.Property<int>("Ma_NguoiDung")
@@ -116,6 +166,9 @@ namespace Digital_Signatues.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsThongSo")
                         .HasColumnType("bit");
 
                     b.Property<int>("Ma_ChucDanh")
@@ -297,6 +350,17 @@ namespace Digital_Signatues.Migrations
                     b.Navigation("NguoiDung");
                 });
 
+            modelBuilder.Entity("Digital_Signatues.Models.KySoThongSo", b =>
+                {
+                    b.HasOne("Digital_Signatues.Models.NguoiDung", "NguoiDung")
+                        .WithOne("KySoNguoiDung")
+                        .HasForeignKey("Digital_Signatues.Models.KySoThongSo", "Ma_NguoiDung")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
                     b.HasOne("Digital_Signatues.Models.ChucDanh", "ChucDanh")
@@ -391,6 +455,8 @@ namespace Digital_Signatues.Migrations
 
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
+                    b.Navigation("KySoNguoiDung");
+
                     b.Navigation("kySoTests");
 
                     b.Navigation("NguoiDung_PhongBan");

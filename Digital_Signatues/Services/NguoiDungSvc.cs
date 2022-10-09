@@ -208,6 +208,7 @@ namespace Digital_Signatues.Services
                           .Include(x=>x.ChucDanh)
                           .Include(x=>x.NguoiDung_PhongBan)
                           .FirstOrDefaultAsync();
+            nguoiDung.PassWord = String.Empty;
             return nguoiDung;
         }
         public async Task<List<NguoiDung>> GetNguoiDungsAsync()
@@ -218,7 +219,13 @@ namespace Digital_Signatues.Services
                             .Include(x=>x.ChucDanh)
                             .Include(x=>x.NguoiDung_PhongBan)
                             .ToListAsync();
-            return nguoiDungs;
+            List<NguoiDung> ret=new List<NguoiDung>();
+            foreach(var item in nguoiDungs)
+            {
+                item.PassWord = String.Empty;
+                ret.Add(item);
+            }
+            return ret;
         }
         public async Task<bool> DeleteNguoiDungAsync(int id_NguoiDung)
         {

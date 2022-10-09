@@ -27,8 +27,6 @@ namespace Digital_Signatues.Models
         public string Serial { get; set; }
         [Column(TypeName = "nvarchar(500)")]
         public string Subject { get; set; }
-        public DateTime? NgayKyThuCuoi { get; set; }
-        public int? Ma_NguoiKyThuCuoi { get; set; }
         [Column(TypeName = "nvarchar(500)")]
         public string FilePfx { get; set; }
         [Column(TypeName = "nvarchar(500)")]

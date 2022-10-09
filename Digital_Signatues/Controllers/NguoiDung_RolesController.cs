@@ -53,9 +53,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">id người dùng</param>
         /// <returns></returns>
         [HttpGet("{id}"),ActionName("rolein")]
-        public async Task<List<NguoiDung_Role>> GetNguoiDung_RolesAsync(int id)//hiển thị toàn bộ role của người dùng có
+        public async Task<IActionResult> GetNguoiDung_RolesAsync(int id)//hiển thị toàn bộ role của người dùng có
         {
-            return await _nguoiDung_Role.GetNguoiDung_RolesAsync(id);//id của người dùng
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách vai trò thành công",
+                data = await _nguoiDung_Role.GetNguoiDung_RolesAsync(id)
+            });
         }
         /// <summary>
         /// trả về role mà người dùng chưa có

@@ -53,9 +53,14 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">id người dùng</param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("phongbanin")]
-        public async Task<List<NguoiDung_PhongBan>> GetNguoiDung_PhongBansAsync(int id)
+        public async Task<IActionResult> GetNguoiDung_PhongBansAsync(int id)
         {
-            return await _nguoiDung_PhongBan.GetNguoiDung_PhongBansAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Lấy danh sách phòng ban của người dùng thành công",
+                data = await _nguoiDung_PhongBan.GetNguoiDung_PhongBansAsync(id)
+        });
         }
         /// <summary>
         /// trả về phòng ban mà người dùng chưa có

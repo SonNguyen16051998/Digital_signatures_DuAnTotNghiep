@@ -51,9 +51,16 @@ namespace Digital_Signatues.Controllers
         /// <param name="id">mã role</param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("quyenin")]
-        public async Task<List<Role_Quyen>> GetRole_QuyensAsync(int id)//hiển thị toàn bộ quyền của role có
+        public async Task<IActionResult> GetRole_QuyensAsync(int id)//hiển thị toàn bộ quyền của role có
         {
-            return await _role_Quyen.GetRole_QuyensAsync(id);//id của role
+            var list = await _role_Quyen.GetRole_QuyensAsync(id);
+            return Ok(new
+            {
+                retCode = 1,
+                retText = "Danh sách quyền thuộc vai trò",
+                data = list
+            });
+            //return await _role_Quyen.GetRole_QuyensAsync(id);//id của role
         }
         /// <summary>
         /// hiển thị các quyền mà role chưa có
