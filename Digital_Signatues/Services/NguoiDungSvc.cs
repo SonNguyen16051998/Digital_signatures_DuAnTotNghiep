@@ -106,6 +106,9 @@ namespace Digital_Signatues.Services
             {
                 nguoiDung.PassWord = MaHoaHelper.Mahoa(nguoiDung.PassWord);
                 await _context.NguoiDungs.AddAsync(nguoiDung);
+                var chucdanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == nguoiDung.Ma_ChucDanh).FirstOrDefaultAsync();
+                chucdanh.IsSelected = true;
+                _context.ChucDanhs.Update(chucdanh);
                 await _context.SaveChangesAsync();
                 ret = nguoiDung.Ma_NguoiDung;
             }
@@ -124,6 +127,16 @@ namespace Digital_Signatues.Services
                 update.GioiTinh=putNguoiDung.GioiTinh;
                 update.Block=putNguoiDung.Block;
                 update.Avatar = putNguoiDung.Avatar;
+                if(update.Ma_ChucDanh!=putNguoiDung.Ma_ChucDanh)
+                {
+                    var oldchucdanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == update.Ma_ChucDanh).FirstOrDefaultAsync();
+                    oldchucdanh.IsSelected = false;
+                    _context.ChucDanhs.Update(oldchucdanh);
+                    var newchucdanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == putNguoiDung.Ma_ChucDanh).FirstOrDefaultAsync();
+                    newchucdanh.IsSelected = true;
+                    _context.ChucDanhs.Update(newchucdanh);
+                    update.Ma_ChucDanh = putNguoiDung.Ma_ChucDanh;
+                }
                 _context.NguoiDungs.Update(update);
                 await _context.SaveChangesAsync();
                 ret = update.Ma_NguoiDung;
@@ -242,7 +255,11 @@ namespace Digital_Signatues.Services
                 NguoiDung nguoidung = new NguoiDung();
                 nguoidung = await _context.NguoiDungs.Where(x => x.Ma_NguoiDung == id_NguoiDung).FirstOrDefaultAsync();
                 nguoidung.IsDeleted = true;
+                nguoidung.Ma_ChucDanh = 1;
+                var chucdanh = await _context.ChucDanhs.Where(x => x.Ma_ChucDanh == nguoidung.Ma_ChucDanh).FirstOrDefaultAsync();
+                chucdanh.IsSelected = false;
                 _context.NguoiDungs.Update(nguoidung);
+                _context.ChucDanhs.Update(chucdanh);
                 await _context.SaveChangesAsync();
                 ret = true;
             }

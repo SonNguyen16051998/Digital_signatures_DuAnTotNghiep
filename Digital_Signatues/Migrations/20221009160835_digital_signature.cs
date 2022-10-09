@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Digital_Signatues.Migrations
 {
-    public partial class digital_signatures : Migration
+    public partial class digital_signature : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,8 @@ namespace Digital_Signatues.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Ten_ChucDanh = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsSelected = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -287,8 +288,7 @@ namespace Digital_Signatues.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_NguoiDungs_Ma_ChucDanh",
                 table: "NguoiDungs",
-                column: "Ma_ChucDanh",
-                unique: true);
+                column: "Ma_ChucDanh");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Role_Quyens_Ma_Quyen",

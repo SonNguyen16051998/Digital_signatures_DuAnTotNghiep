@@ -175,6 +175,9 @@ namespace Digital_Signatues.Services
             {
                 var thongso=await _context.KySoThongSos.Where(x=>x.Ma_NguoiDung==ma_nguoidung).FirstOrDefaultAsync();
                 _context.KySoThongSos.Remove(thongso);
+                var nguoidung = await _context.NguoiDungs.Where(x => x.Ma_NguoiDung == ma_nguoidung).FirstOrDefaultAsync();
+                nguoidung.IsThongSo = false;
+                _context.NguoiDungs.Update(nguoidung);
                 await _context.SaveChangesAsync();
                 result = true;
             }

@@ -34,6 +34,12 @@ namespace Digital_Signatues
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddDbContext<DataContext>(op =>
               op.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -92,6 +98,8 @@ namespace Digital_Signatues
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Digital_Signatues v1");
                 });
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
 

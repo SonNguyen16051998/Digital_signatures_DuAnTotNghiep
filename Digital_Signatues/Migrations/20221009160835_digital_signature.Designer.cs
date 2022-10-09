@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Digital_Signatues.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221009074138_digital_signatures")]
-    partial class digital_signatures
+    [Migration("20221009160835_digital_signature")]
+    partial class digital_signature
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,9 @@ namespace Digital_Signatues.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSelected")
                         .HasColumnType("bit");
 
                     b.Property<int>("Order")
@@ -184,8 +187,7 @@ namespace Digital_Signatues.Migrations
 
                     b.HasKey("Ma_NguoiDung");
 
-                    b.HasIndex("Ma_ChucDanh")
-                        .IsUnique();
+                    b.HasIndex("Ma_ChucDanh");
 
                     b.ToTable("NguoiDungs");
                 });
@@ -364,8 +366,8 @@ namespace Digital_Signatues.Migrations
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
                     b.HasOne("Digital_Signatues.Models.ChucDanh", "ChucDanh")
-                        .WithOne("NguoiDung")
-                        .HasForeignKey("Digital_Signatues.Models.NguoiDung", "Ma_ChucDanh")
+                        .WithMany("NguoiDung")
+                        .HasForeignKey("Ma_ChucDanh")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

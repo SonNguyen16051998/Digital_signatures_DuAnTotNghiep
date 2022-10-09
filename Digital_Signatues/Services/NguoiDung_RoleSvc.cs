@@ -35,6 +35,7 @@ namespace Digital_Signatues.Services
                         Ma_Role = item.id_role
                     };
                     await _context.NguoiDung_Roles.AddAsync(nguoidung_role);
+                    await _context.SaveChangesAsync();
                     var quyen = await _context.Role_Quyens.Where(x => x.Ma_Role == item.id_role).ToListAsync();
                     foreach(var item1 in quyen)
                     {

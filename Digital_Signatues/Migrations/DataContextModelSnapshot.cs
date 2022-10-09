@@ -29,6 +29,9 @@ namespace Digital_Signatues.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
@@ -182,8 +185,7 @@ namespace Digital_Signatues.Migrations
 
                     b.HasKey("Ma_NguoiDung");
 
-                    b.HasIndex("Ma_ChucDanh")
-                        .IsUnique();
+                    b.HasIndex("Ma_ChucDanh");
 
                     b.ToTable("NguoiDungs");
                 });
@@ -362,8 +364,8 @@ namespace Digital_Signatues.Migrations
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
                     b.HasOne("Digital_Signatues.Models.ChucDanh", "ChucDanh")
-                        .WithOne("NguoiDung")
-                        .HasForeignKey("Digital_Signatues.Models.NguoiDung", "Ma_ChucDanh")
+                        .WithMany("NguoiDung")
+                        .HasForeignKey("Ma_ChucDanh")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
