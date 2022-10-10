@@ -118,7 +118,8 @@ namespace Digital_Signatues.Helpers
           Rectangle rectangle, int page, string fieldName)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            IExternalSignature externalSignature = new PrivateKeySignature(this.Cert.Akp, DigestAlgorithms.SHA512);
+            IExternalSignature externalSignature = new PrivateKeySignature(this.Cert.Akp, DigestAlgorithms.SHA256);
+            PdfReader.unethicalreading = true;
             PdfReader reader = new PdfReader(this.InputPDF);
             var output = new FileStream(this.OutputPDF, FileMode.Create, FileAccess.Write);
 
