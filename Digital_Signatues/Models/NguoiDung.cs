@@ -55,7 +55,8 @@ namespace Digital_Signatues.Models
         public ICollection<NguoiDung_Role> NguoiDung_Role { get; set; }
         public ICollection<NguoiDung_Quyen> NguoiDung_Quyens { get; set; }
         public ICollection<KySoTest> kySoTests { get; set; }
-        /*public ICollection<KySoDeXuat> KySoDeXuat_NguoiDeXuat { get; set; }*/
         public KySoThongSo KySoNguoiDung { get; set; }
+        public ICollection<KySoDeXuat> kySoDeXuats { get; set; }
+        public ICollection<KySoBuocDuyet> kySoBuocDuyets { get; set; }
     }
 }

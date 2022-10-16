@@ -1,4 +1,7 @@
-﻿namespace Digital_Signatues.Models.ViewModel
+﻿using Digital_Signatues.Models.ViewPut;
+using System.Collections.Generic;
+
+namespace Digital_Signatues.Models.ViewModel
 {
     public class ViewToken
     {

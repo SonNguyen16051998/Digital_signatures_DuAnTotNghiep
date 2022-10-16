@@ -13,6 +13,8 @@ namespace Digital_Signatues.Models
         public string Hinh1 { get; set; }
         [Column(TypeName = "nvarchar(500)")]
         public string Hinh2 { get; set; }
+        [Column(TypeName = "nvarchar(500)")]
+        public string Hinh3 { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string LyDoMacDinh { get; set; }
         [Column(TypeName = "nvarchar(55)"),Required]
@@ -20,7 +22,7 @@ namespace Digital_Signatues.Models
         public int Ma_NguoiCapNhatCuoi { get; set; }
         public DateTime NgayCapNhatCuoi { get; set; }
         public bool TrangThai { get; set; }//0 là không hiệu lực, 1 là hiệu lực
-        public bool? LoaiChuKy { get; set; }//0 là kí file, 1 là kí smartSign
+        public bool LoaiChuKy { get; set; }//0 là kí file, 1 là kí smartSign
         [Column(TypeName ="date")]
         public DateTime NgayChuKyHetHan { get; set; }
         [Column(TypeName = "nvarchar(500)")]

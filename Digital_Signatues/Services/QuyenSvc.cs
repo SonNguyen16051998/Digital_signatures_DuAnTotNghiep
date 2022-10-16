@@ -14,6 +14,7 @@ namespace Digital_Signatues.Services
         Task<bool> DeleteQuyenAsync(int id); 
         Task<int> AddQuyenAsync (Quyen quyen);
         Task<int> UpdateQuyenAsync(PutQuyen putQuyen);
+       
     }
     public class QuyenSvc:IQuyen
     {
@@ -100,5 +101,6 @@ namespace Digital_Signatues.Services
             }
             return ret;
         }
+        
     }
 }

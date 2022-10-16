@@ -44,6 +44,80 @@ namespace Digital_Signatues.Migrations
                     b.ToTable("ChucDanhs");
                 });
 
+            modelBuilder.Entity("Digital_Signatues.Models.KySoBuocDuyet", b =>
+                {
+                    b.Property<int>("Ma_BuocDuyet")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FileDaKy")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsDaKy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTuChoi")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Ma_KySoDeXuat")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Ma_NguoiKy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("NgayKy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ten_Buoc")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Ma_BuocDuyet");
+
+                    b.HasIndex("Ma_NguoiKy");
+
+                    b.ToTable("kySoBuocDuyets");
+                });
+
+            modelBuilder.Entity("Digital_Signatues.Models.KySoDeXuat", b =>
+                {
+                    b.Property<int>("Ma_KySoDeXuat")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("LoaiVanBan")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Ma_NguoiDeXuat")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NgayDeXuat")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Ten_DeXuat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("TrangThai")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("inputFile")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Ma_KySoDeXuat");
+
+                    b.HasIndex("Ma_NguoiDeXuat");
+
+                    b.ToTable("kySoDeXuats");
+                });
+
             modelBuilder.Entity("Digital_Signatues.Models.KySoTest", b =>
                 {
                     b.Property<int>("Id_KySoTest")
@@ -101,7 +175,10 @@ namespace Digital_Signatues.Migrations
                     b.Property<string>("Hinh2")
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool?>("LoaiChuKy")
+                    b.Property<string>("Hinh3")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("LoaiChuKy")
                         .HasColumnType("bit");
 
                     b.Property<string>("LyDoMacDinh")
@@ -339,6 +416,28 @@ namespace Digital_Signatues.Migrations
                     b.ToTable("Role_Quyens");
                 });
 
+            modelBuilder.Entity("Digital_Signatues.Models.KySoBuocDuyet", b =>
+                {
+                    b.HasOne("Digital_Signatues.Models.NguoiDung", "NguoiDung")
+                        .WithMany("kySoBuocDuyets")
+                        .HasForeignKey("Ma_NguoiKy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("Digital_Signatues.Models.KySoDeXuat", b =>
+                {
+                    b.HasOne("Digital_Signatues.Models.NguoiDung", "NguoiDung")
+                        .WithMany("kySoDeXuats")
+                        .HasForeignKey("Ma_NguoiDeXuat")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
             modelBuilder.Entity("Digital_Signatues.Models.KySoTest", b =>
                 {
                     b.HasOne("Digital_Signatues.Models.NguoiDung", "NguoiDung")
@@ -455,6 +554,10 @@ namespace Digital_Signatues.Migrations
 
             modelBuilder.Entity("Digital_Signatues.Models.NguoiDung", b =>
                 {
+                    b.Navigation("kySoBuocDuyets");
+
+                    b.Navigation("kySoDeXuats");
+
                     b.Navigation("KySoNguoiDung");
 
                     b.Navigation("kySoTests");

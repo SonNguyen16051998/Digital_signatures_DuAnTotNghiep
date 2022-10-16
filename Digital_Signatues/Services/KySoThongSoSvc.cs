@@ -43,7 +43,7 @@ namespace Digital_Signatues.Services
                     Ma_NguoiCapNhatCuoi = PostKySoThongSo.Ma_NguoiCapNhatCuoi,
                     NgayCapNhatCuoi = System.DateTime.Now,
                     TrangThai = PostKySoThongSo.TrangThai,
-                    LoaiChuKy = null,
+                    LoaiChuKy = false,
                     NgayChuKyHetHan = PostKySoThongSo.NgayChuKyHetHan,
                     Serial = null,
                     Subject = null,
@@ -119,9 +119,12 @@ namespace Digital_Signatues.Services
             {
                 var thongso = await _context.KySoThongSos
                     .Where(x => x.Ma_NguoiDung == cauHinhFileChuKy.Ma_NguoiDung).FirstOrDefaultAsync();
-                thongso.FilePfx = cauHinhFileChuKy.FilePfx;
-                thongso.PasscodeFilePfx = cauHinhFileChuKy.PasscodeFilePfx;
-                thongso.LoaiChuKy = false;
+                if(cauHinhFileChuKy.FilePfx != null)
+                {
+                    thongso.FilePfx = cauHinhFileChuKy.FilePfx;
+                    thongso.PasscodeFilePfx = cauHinhFileChuKy.PasscodeFilePfx;
+                }
+                thongso.LoaiChuKy = cauHinhFileChuKy.LoaiChuKy;
                 _context.KySoThongSos.Update(thongso);
                 await _context.SaveChangesAsync();
                 result = true;

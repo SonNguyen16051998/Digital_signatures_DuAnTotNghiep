@@ -21,7 +21,7 @@ namespace Digital_Signatues.Controllers
         private readonly IKySo _kyso;
         private readonly IKySoThongSo _thongso;
         private readonly IHostingEnvironment _environment;
-        public KySosController(IKySo kyso, IHostingEnvironment environment,IKySoThongSo thongso)
+        public KySosController(IKySo kyso, IHostingEnvironment environment, IKySoThongSo thongso)
         {
             _kyso = kyso;
             _environment = environment;
@@ -37,16 +37,16 @@ namespace Digital_Signatues.Controllers
         {
             if (ModelState.IsValid)
             {
-                string fileName="";
+                string fileName = "";
                 foreach (var item in signs.PostPositionSigns)
                 {
-                    string outputFile ="";
+                    string outputFile = "";
                     string inputNewFile = "";
                     string fieldName = "";
                     string name = Path.GetFileNameWithoutExtension(signs.inputFile);
                     string fontPath = Path.Combine(_environment.WebRootPath, "Font", "ARIALUNI.TTF");
                     var thongso = await _thongso.GetThongSoNguoiDungAsync(signs.Id_NguoiDung);
-                    Certicate myCert = new Certicate(thongso.FilePfx,thongso.PasscodeFilePfx);
+                    Certicate myCert = new Certicate(thongso.FilePfx, thongso.PasscodeFilePfx);
                     X509Certificate cert = new X509Certificate(thongso.FilePfx, thongso.PasscodeFilePfx);
 
                     if (await _thongso.CheckSubjectFileAsync(signs.Id_NguoiDung) != cert.Subject)
@@ -58,12 +58,12 @@ namespace Digital_Signatues.Controllers
                         await _thongso.CapNhatThongSoFileAsync(thongsofilepfx);
                     }
                     PDFSigner pdfs = new PDFSigner();
-                    for(int i = 0;i<1000;i++)
+                    for (int i = 0; i < 1000; i++)
                     {
                         fileName = name + "_" + i + "_daky.pdf";
                         fieldName = "filedName_" + i;
                         outputFile = Path.Combine(_environment.WebRootPath, "Filedaky") + @"\" + name + "_" + i + "_daky.pdf";
-                        if(!System.IO.File.Exists(outputFile))
+                        if (!System.IO.File.Exists(outputFile))
                         {
                             inputNewFile = Path.Combine(_environment.WebRootPath, "Filedaky") + @"\" + name + "_" + (i - 1) + "_daky.pdf";
                             break;
@@ -77,9 +77,9 @@ namespace Digital_Signatues.Controllers
                     {
                         pdfs = new PDFSigner(signs.inputFile, outputFile, myCert, fontPath);
                     }
-                    if(!string.IsNullOrEmpty(item.textSign))
+                    if (!string.IsNullOrEmpty(item.textSign))
                     {
-                        var rectangle = new iTextSharp.text.Rectangle((int)item.x,(int) item.y);
+                        var rectangle = new iTextSharp.text.Rectangle((int)item.x, (int)item.y);
                         pdfs.SignText(thongso.LyDoMacDinh, "", "", item.textSign, rectangle, item.pageSign, fieldName);
                     }
                     else

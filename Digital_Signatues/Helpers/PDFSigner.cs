@@ -2,8 +2,12 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.security;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Digital_Signatues.Helpers
@@ -38,9 +42,9 @@ namespace Digital_Signatues.Helpers
             this.FontPath = fontPath;
         }
 
-        public void Verify()
+       /* public void Verify()
         {
-        }
+        }*/
         public void SignImage(string sigReason, string sigContact, string sigLocation, string imageFilePath,
          Rectangle rectangle, int page, string fieldName, bool flagKyHethong)
         {
@@ -168,6 +172,36 @@ namespace Digital_Signatues.Helpers
             MakeSignature.SignDetached(appearance, externalSignature, this.Cert.Chain, null, null, null, 0, CryptoStandard.CMS);
             Stamper.Close();
             reader.Close();
+        }
+
+        public static bool VerifySignatures(byte[] file)
+        {
+
+            PdfReader reader = new PdfReader(file);
+
+            AcroFields af = reader.AcroFields;
+            var names = af.GetSignatureNames();
+            if (names.Count == 0)
+                return false; // no signatures
+            else
+            {
+                foreach (string name in names)
+                {
+                    if (!af.SignatureCoversWholeDocument(name))
+                    {
+                        return false;
+                    }
+
+                    PdfPKCS7 pk = af.VerifySignature(name);
+
+
+                    if (!pk.Verify())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

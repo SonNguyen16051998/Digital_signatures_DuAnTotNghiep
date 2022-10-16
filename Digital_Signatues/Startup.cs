@@ -80,6 +80,28 @@ namespace Digital_Signatues
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Digital_Signatues", Version = "v1" });
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
@@ -106,6 +128,8 @@ namespace Digital_Signatues
             app.UseRouting();
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

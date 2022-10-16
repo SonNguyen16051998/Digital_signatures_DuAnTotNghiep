@@ -23,31 +23,6 @@ namespace Digital_Signatues.Models
 
             model.Entity<NguoiDung_Quyen>().HasKey(e => new { e.Ma_NguoiDung, e.Ma_Quyen });
 
-        /*    model.Entity<NguoiDung>()
-                        .HasMany(p => p.KySoNguoiDuyet_Dungs)
-                        .WithOne(c => c.NguoiDung) // Different here
-                        .HasForeignKey(c => new { c.Ma_NguoiDung });
-
-            model.Entity<NguoiDung>()
-                        .HasMany(p => p.KySoNguoiDuyet_Taos)
-                        .WithOne(c => c.NguoiTao) // Different here
-                        .HasForeignKey(c => new { c.Ma_NguoiTao });
-
-
-            model.Entity<NguoiDung>()
-                        .HasMany(p => p.KySoThongSo_NguoiDung)
-                        .WithOne(c => c.NguoiDung) // Different here
-                        .HasForeignKey(c => new { c.Ma_NguoiDung });
-
-            model.Entity<NguoiDung>()
-                       .HasMany(p => p.KySoThongSo_NguoiKyThu)
-                       .WithOne(c => c.NguoiKyThu) // Different here
-                       .HasForeignKey(c => new { c.Ma_NguoiKyThu });
-
-            model.Entity<NguoiDung>()
-                      .HasMany(p => p.KySoThongSo_NguoiUpdate)
-                      .WithOne(c => c.NguoiUpdate) // Different here
-                      .HasForeignKey(c => new { c.Ma_NguoiUpDate });*/
         }
 
         public DbSet<ChucDanh> ChucDanhs { get; set; }
@@ -62,5 +37,7 @@ namespace Digital_Signatues.Models
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<KySoTest> KySoTests { get; set;}
         public DbSet<KySoThongSo> KySoThongSos { get; set; }
+        public DbSet<KySoDeXuat> kySoDeXuats { get; set; }
+        public DbSet<KySoBuocDuyet> kySoBuocDuyets { get; set; }
     }
 }
